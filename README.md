@@ -1,0 +1,2 @@
+# LTS
+Proiect Facultate
