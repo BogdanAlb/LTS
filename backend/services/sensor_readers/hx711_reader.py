@@ -5,7 +5,7 @@ from .hx711 import HX711
 # Configurație pini și calibrare
 DOUT_PIN = 5    # BCM 5
 SCK_PIN = 6     # BCM 6
-REFERENCE_UNIT = -5.0   # ajustează după calibrare
+REFERENCE_UNIT = 114   # ajustează după calibrare
 INTERVAL_SEC = 0.05     # timp între citiri
 
 class HX711Reader:

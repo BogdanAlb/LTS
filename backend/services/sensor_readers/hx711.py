@@ -92,10 +92,10 @@ class HX711:
         self.set_offset(self.read_average(times))
         return self.OFFSET
 
-    def get_weight_B(self, times=5):
+    def get_weight_A(self, times=5):
         # pentru canalul B (gain = 32)
         g = self.GAIN
-        self.set_gain(32)
+        self.set_gain(128)
         val = self.read_average(times) - self.OFFSET
         self.set_gain(g)
         return val / self.REFERENCE_UNIT
