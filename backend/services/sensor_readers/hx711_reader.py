@@ -6,8 +6,8 @@ import time
 from hx711 import HX711
 
 
-# Ajusteaza dupa calibrarea ta. 1.14 ~ grame (exemplu).
-REFERENCE_UNIT = 1.14
+# Ajusteaza dupa calibrarea ta. 114 ~ grame (exemplu).
+REFERENCE_UNIT = 114
 
 class HX711Reader:
     def __init__(self, dout_pin: int, sck_pin: int, reference_unit: float = REFERENCE_UNIT):
