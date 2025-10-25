@@ -10,8 +10,8 @@ from hx711 import HX711
 # ---------- settings ----------
 DOUT_PIN = 5   # BCM 5
 SCK_PIN  = 6   # BCM 6
-REFERENCE_UNIT = 1.14   # adjust after calibration
-INTERVAL_SEC = 0.05    # 50 ms
+REFERENCE_UNIT = 114   # adjust after calibration
+INTERVAL_SEC = 0.10    # 50 ms
 # ------------------------------
 
 def clean_and_exit():
