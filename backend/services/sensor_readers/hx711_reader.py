@@ -14,6 +14,22 @@ SCALE_RATIO = 44.3   # echivalent cu REFERENCE_UNIT inversat
 INTERVAL_SEC = 0.5         # 500 ms
 # ------------------------------
 
+class HX711Reader:
+    def __init__(self, dout_pin=5, sck_pin=6, scale_ratio=44.3):
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+
+        self.hx = HX711(dout_pin=dout_pin, pd_sck_pin=sck_pin)
+        self.hx.reset()
+        self.hx.zero()
+        self.hx.set_scale_ratio(scale_ratio)
+
+    def read(self, samples=7):
+        """Citește greutatea medie (în grame)."""
+        grams = self.hx.get_weight_mean(samples)
+        grams_rounded = int(grams / 10) * 10
+        return round(grams_rounded, 1)
+        
 def clean_and_exit():
     print("\nCleaning GPIO and exit...")
     try:
