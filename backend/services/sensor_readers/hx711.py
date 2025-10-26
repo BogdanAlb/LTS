@@ -1,189 +1,421 @@
-# hx711.py
-# Curat, stabil, canal A @128x si suport optional pentru B @32x.
-# Necesita: RPi.GPIO
-
-import time
 import RPi.GPIO as GPIO
-
+import time
+import threading
 
 class HX711:
-    """
-    Driver simplu si robust pentru HX711.
-    - Foloseste numerotare pini BCM.
-    - Implicit citeste canalul A la 128x (standard pentru load cell 4 fire).
-    - Format de citire: MSB/MSB.
-    """
 
-    def __init__(self, dout_pin: int, pd_sck_pin: int, gpio_mode=GPIO.BCM):
-        self.DOUT = dout_pin
-        self.PD_SCK = pd_sck_pin
+    def __init__(self, dout, pd_sck, gain=128):
+        self.PD_SCK = pd_sck
 
-        GPIO.setmode(gpio_mode)
+        self.DOUT = dout
+
+        # Mutex for reading from the HX711, in case multiple threads in client
+        # software try to access get values from the class at the same time.
+        self.readLock = threading.Lock()
+        
+        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.PD_SCK, GPIO.OUT)
         GPIO.setup(self.DOUT, GPIO.IN)
 
-        # Setari de scala
-        self.OFFSET = 0
-        self.REFERENCE_UNIT = 1.0
+        self.GAIN = 0
 
-        # Gain intern HX711:
-        # 128 (A), 64 (A), 32 (B)
-        self._gain = 128
-        self._gain_channel_pulses = 1  # 1=128(A), 3=64(A), 2=32(B)
+        # The value returned by the hx711 that corresponds to your reference
+        # unit AFTER dividing by the SCALE.
+        self.REFERENCE_UNIT = 1
+        self.REFERENCE_UNIT_B = 1
 
-        self.set_gain(128)  # standard
-        self.reset()
+        self.OFFSET = 1
+        self.OFFSET_B = 1
+        self.lastVal = int(0)
 
-    # -------------------- Config & utilitare --------------------
+        self.DEBUG_PRINTING = False
 
-    def set_reference_unit(self, reference_unit: float):
-        if reference_unit == 0:
-            raise ValueError("REFERENCE_UNIT nu poate fi 0.")
-        self.REFERENCE_UNIT = float(reference_unit)
+        self.byte_format = 'MSB'
+        self.bit_format = 'MSB'
 
-    def get_reference_unit(self) -> float:
-        return self.REFERENCE_UNIT
+        self.set_gain(gain)
+        
+        # Think about whether this is necessary.
+        time.sleep(1)
 
-    def set_gain(self, gain: int):
-        """
-        Seteaza gain + canal (pregateste conversia urmatoare).
-        gain = 128 -> canal A, 128x (1 puls)
-        gain = 64  -> canal A,  64x (3 pulsi)
-        gain = 32  -> canal B,  32x (2 pulsi)
-        """
-        if gain not in (128, 64, 32):
-            raise ValueError("Gain invalid. Foloseste 128, 64 sau 32.")
-        self._gain = gain
-        if gain == 128:
-            self._gain_channel_pulses = 1
-        elif gain == 64:
-            self._gain_channel_pulses = 3
-        else:  # 32
-            self._gain_channel_pulses = 2
 
-        # O citire dummy pentru a aplica gainul (conform datasheet)
-        self._read_signed_24bit()
+    def convertFromTwosComplement24bit(self, inputValue):
+        return -(inputValue & 0x800000) + (inputValue & 0x7fffff)
 
-    def get_gain(self) -> int:
-        return self._gain
-
-    def is_ready(self) -> bool:
-        # DOUT LOW = date gata
+    
+    def is_ready(self):
         return GPIO.input(self.DOUT) == 0
 
-    def wait_ready(self, timeout: float = 1.0) -> bool:
-        t0 = time.time()
-        while not self.is_ready():
-            if time.time() - t0 > timeout:
-                return False
-            time.sleep(0.001)
-        return True
+    
+    def set_gain(self, gain):
+        if gain == 128:
+            self.GAIN = 1
+        elif gain == 64:
+            self.GAIN = 3
+        elif gain == 32:
+            self.GAIN = 2
 
-    # -------------------- Rutina de citire --------------------
-
-    def _read_signed_24bit(self) -> int:
-        """
-        Citeste o conversie (24 biti) si seteaza gainul pentru urmatorul ciclu,
-        conform _gain_channel_pulses.
-        Intoarce valoarea semnata pe 24 biti (two's complement).
-        """
-        if not self.wait_ready(timeout=1.0):
-            raise TimeoutError("HX711 nu este gata (DOUT nu a devenit LOW).")
-
-        data = 0
-        # Citire 24 biti, MSB first
-        for _ in range(24):
-            GPIO.output(self.PD_SCK, True)
-            # mica pauza pentru stabilitate
-            time.sleep(0.000001)
-            GPIO.output(self.PD_SCK, False)
-            bit = GPIO.input(self.DOUT)
-            data = (data << 1) | bit
-
-        # Pulsi suplimentari pentru a seta canalul/gain-ul urmator
-        for _ in range(self._gain_channel_pulses):
-            GPIO.output(self.PD_SCK, True)
-            time.sleep(0.000001)
-            GPIO.output(self.PD_SCK, False)
-
-        # Convertire la semnat pe 24b (two's complement)
-        if data & 0x800000:
-            data -= 0x1000000
-
-        return data
-
-    def read_raw(self) -> int:
-        """Valoare bruta semnata (cu offset)."""
-        return self._read_signed_24bit()
-
-    def read_average(self, times: int = 7) -> float:
-        if times <= 0:
-            raise ValueError("times trebuie sa fie > 0")
-        total = 0
-        for _ in range(times):
-            total += self._read_signed_24bit()
-        return total / float(times)
-
-    def tare(self, times: int = 15):
-        """
-        Stabileste OFFSET-ul (zero). Fa tare cu sarcina scoasa.
-        IMPORTANT: apeleaza tare pe acelasi canal/gain pe care vei citi.
-        """
-        avg = self.read_average(times)
-        self.OFFSET = avg
-
-    def get_value(self, times: int = 7) -> float:
-        return self.read_average(times) - self.OFFSET
-
-    def get_weight(self, times: int = 7) -> float:
-        """
-        Greutatea pe canalul/gain-ul curent, folosind REFERENCE_UNIT.
-        Returneaza 'unitati' definite de REFERENCE_UNIT (de ex. grame).
-        """
-        value = self.get_value(times)
-        return value / self.REFERENCE_UNIT
-
-    # -------------------- Confort: A si B dedicate --------------------
-
-    def get_weight_A(self, times: int = 7) -> float:
-        """Citeste pe A @128x (standard)."""
-        prev = self._gain
-        try:
-            if self._gain != 128:
-                self.set_gain(128)
-            return self.get_weight(times)
-        finally:
-            if prev != 128:
-                self.set_gain(prev)
-
-    def get_weight_B(self, times: int = 7) -> float:
-        """Citeste pe B @32x (daca ai cablat pe canalul B)."""
-        prev = self._gain
-        try:
-            if self._gain != 32:
-                self.set_gain(32)
-            return self.get_weight(times)
-        finally:
-            if prev != 32:
-                self.set_gain(prev)
-
-    # -------------------- Control putere --------------------
-
-    def power_down(self):
         GPIO.output(self.PD_SCK, False)
-        time.sleep(0.000005)
+
+        # Read out a set of raw bytes and throw it away.
+        self.readRawBytes()
+
+        
+    def get_gain(self):
+        if self.GAIN == 1:
+            return 128
+        if self.GAIN == 3:
+            return 64
+        if self.GAIN == 2:
+            return 32
+
+        # Shouldn't get here.
+        return 0
+        
+
+    def readNextBit(self):
+       # Clock HX711 Digital Serial Clock (PD_SCK).  DOUT will be
+       # ready 1us after PD_SCK rising edge, so we sample after
+       # lowering PD_SCL, when we know DOUT will be stable.
+       GPIO.output(self.PD_SCK, True)
+       GPIO.output(self.PD_SCK, False)
+       value = GPIO.input(self.DOUT)
+
+       # Convert Boolean to int and return it.
+       return int(value)
+
+
+    def readNextByte(self):
+       byteValue = 0
+
+       # Read bits and build the byte from top, or bottom, depending
+       # on whether we are in MSB or LSB bit mode.
+       for x in range(8):
+          if self.bit_format == 'MSB':
+             byteValue <<= 1
+             byteValue |= self.readNextBit()
+          else:
+             byteValue >>= 1              
+             byteValue |= self.readNextBit() * 0x80
+
+       # Return the packed byte.
+       return byteValue 
+        
+
+    def readRawBytes(self):
+        # Wait for and get the Read Lock, in case another thread is already
+        # driving the HX711 serial interface.
+        self.readLock.acquire()
+
+        # Wait until HX711 is ready for us to read a sample.
+        while not self.is_ready():
+           pass
+
+        # Read three bytes of data from the HX711.
+        firstByte  = self.readNextByte()
+        secondByte = self.readNextByte()
+        thirdByte  = self.readNextByte()
+
+        # HX711 Channel and gain factor are set by number of bits read
+        # after 24 data bits.
+        for i in range(self.GAIN):
+           # Clock a bit out of the HX711 and throw it away.
+           self.readNextBit()
+
+        # Release the Read Lock, now that we've finished driving the HX711
+        # serial interface.
+        self.readLock.release()           
+
+        # Depending on how we're configured, return an ordered list of raw byte
+        # values.
+        if self.byte_format == 'LSB':
+           return [thirdByte, secondByte, firstByte]
+        else:
+           return [firstByte, secondByte, thirdByte]
+
+
+    def read_long(self):
+        # Get a sample from the HX711 in the form of raw bytes.
+        dataBytes = self.readRawBytes()
+
+
+        if self.DEBUG_PRINTING:
+            print(dataBytes,)
+        
+        # Join the raw bytes into a single 24bit 2s complement value.
+        twosComplementValue = ((dataBytes[0] << 16) |
+                               (dataBytes[1] << 8)  |
+                               dataBytes[2])
+
+        if self.DEBUG_PRINTING:
+            print("Twos: 0x%06x" % twosComplementValue)
+        
+        # Convert from 24bit twos-complement to a signed value.
+        signedIntValue = self.convertFromTwosComplement24bit(twosComplementValue)
+
+        # Record the latest sample value we've read.
+        self.lastVal = signedIntValue
+
+        # Return the sample value we've read from the HX711.
+        return int(signedIntValue)
+
+    
+    def read_average(self, times=3):
+        # Make sure we've been asked to take a rational amount of samples.
+        if times <= 0:
+            raise ValueError("HX711()::read_average(): times must >= 1!!")
+
+        # If we're only average across one value, just read it and return it.
+        if times == 1:
+            return self.read_long()
+
+        # If we're averaging across a low amount of values, just take the
+        # median.
+        if times < 5:
+            return self.read_median(times)
+
+        # If we're taking a lot of samples, we'll collect them in a list, remove
+        # the outliers, then take the mean of the remaining set.
+        valueList = []
+
+        for x in range(times):
+            valueList += [self.read_long()]
+
+        valueList.sort()
+
+        # We'll be trimming 20% of outlier samples from top and bottom of collected set.
+        trimAmount = int(len(valueList) * 0.2)
+
+        # Trim the edge case values.
+        valueList = valueList[trimAmount:-trimAmount]
+
+        # Return the mean of remaining samples.
+        return sum(valueList) / len(valueList)
+
+
+    # A median-based read method, might help when getting random value spikes
+    # for unknown or CPU-related reasons
+    def read_median(self, times=3):
+        if times <= 0:
+          raise ValueError("HX711::read_median(): times must be greater than zero!")
+
+    # Dacă times == 1, doar o singură citire
+        if times == 1:
+          return self.read_long()
+
+        valueList = []
+
+        for x in range(times):
+            valueList.append(self.read_long())
+
+        valueList.sort()
+
+        # Dacă times e impar, luăm valoarea de mijloc
+        if (times & 0x1) == 0x1:
+            return valueList[len(valueList) // 2]
+        else:
+            # Dacă times e par, facem media aritmetică a celor două valori din mijloc
+            midpoint = len(valueList) // 2
+            return (valueList[midpoint - 1] + valueList[midpoint]) / 2.0
+
+
+    # Compatibility function, uses channel A version
+    def get_value(self, times=3):
+        return self.get_value_A(times)
+
+
+    def get_value_A(self, times=3):
+        return self.read_median(times) - self.get_offset_A()
+
+
+    def get_value_B(self, times=3):
+        # for channel B, we need to set_gain(32)
+        g = self.get_gain()
+        self.set_gain(32)
+        value = self.read_median(times) - self.get_offset_B()
+        self.set_gain(g)
+        return value
+
+    # Compatibility function, uses channel A version
+    def get_weight(self, times=3):
+        return self.get_weight_A(times)
+
+
+    def get_weight_A(self, times=3):
+        value = self.get_value_A(times)
+        value = value / self.REFERENCE_UNIT
+        return value
+
+    def get_weight_B(self, times=3):
+        value = self.get_value_B(times)
+        value = value / self.REFERENCE_UNIT_B
+        return value
+    
+
+    # Sets tare for channel A for compatibility purposes
+    def tare(self, times=15):
+        return self.tare_A(times)
+    
+    
+    def tare_A(self, times=15):
+        # Backup REFERENCE_UNIT value
+        backupReferenceUnit = self.get_reference_unit_A()
+        self.set_reference_unit_A(1)
+        
+        value = self.read_average(times)
+
+        if self.DEBUG_PRINTING:
+            print("Tare A value:", value)
+        
+        self.set_offset_A(value)
+
+        # Restore the reference unit, now that we've got our offset.
+        self.set_reference_unit_A(backupReferenceUnit)
+
+        return value
+
+
+    def tare_B(self, times=15):
+        # Backup REFERENCE_UNIT value
+        backupReferenceUnit = self.get_reference_unit_B()
+        self.set_reference_unit_B(1)
+
+        # for channel B, we need to set_gain(32)
+        backupGain = self.get_gain()
+        self.set_gain(32)
+
+        value = self.read_average(times)
+
+        if self.DEBUG_PRINTING:
+            print("Tare B value:", value)
+        
+        self.set_offset_B(value)
+
+        # Restore gain/channel/reference unit settings.
+        self.set_gain(backupGain)
+        self.set_reference_unit_B(backupReferenceUnit)
+       
+        return value
+
+
+    def set_reading_format(self, byte_format="LSB", bit_format="MSB"):
+        if byte_format == "LSB":
+            self.byte_format = byte_format
+        elif byte_format == "MSB":
+            self.byte_format = byte_format
+        else:
+            raise ValueError("Unrecognised byte_format: \"%s\"" % byte_format)
+
+        if bit_format == "LSB":
+            self.bit_format = bit_format
+        elif bit_format == "MSB":
+            self.bit_format = bit_format
+        else:
+            raise ValueError("Unrecognised bitformat: \"%s\"" % bit_format)
+
+            
+    # sets offset for channel A for compatibility reasons
+    def set_offset(self, offset):
+        self.set_offset_A(offset)
+
+    def set_offset_A(self, offset):
+        self.OFFSET = offset
+
+    def set_offset_B(self, offset):
+        self.OFFSET_B = offset
+
+    def get_offset(self):
+        return self.get_offset_A()
+
+    def get_offset_A(self):
+        return self.OFFSET
+
+    def get_offset_B(self):
+        return self.OFFSET_B
+
+
+    
+    def set_reference_unit(self, reference_unit):
+        self.set_reference_unit_A(reference_unit)
+
+        
+    def set_reference_unit_A(self, reference_unit):
+        # Make sure we aren't asked to use an invalid reference unit.
+        if reference_unit == 0:
+            raise ValueError("HX711::set_reference_unit_A() can't accept 0 as a reference unit!")
+            return
+
+        self.REFERENCE_UNIT = reference_unit
+
+        
+    def set_reference_unit_B(self, reference_unit):
+        # Make sure we aren't asked to use an invalid reference unit.
+        if reference_unit == 0:
+            raise ValueError("HX711::set_reference_unit_A() can't accept 0 as a reference unit!")
+            return
+
+        self.REFERENCE_UNIT_B = reference_unit
+
+
+    def get_reference_unit(self):
+        return get_reference_unit_A()
+
+        
+    def get_reference_unit_A(self):
+        return self.REFERENCE_UNIT
+
+        
+    def get_reference_unit_B(self):
+        return self.REFERENCE_UNIT_B
+        
+        
+    def power_down(self):
+        # Wait for and get the Read Lock, in case another thread is already
+        # driving the HX711 serial interface.
+        self.readLock.acquire()
+
+        # Because a rising edge on HX711 Digital Serial Clock (PD_SCK).  We then
+        # leave it held up and wait 100us.  After 60us the HX711 should be
+        # powered down.
+        GPIO.output(self.PD_SCK, False)
         GPIO.output(self.PD_SCK, True)
+
         time.sleep(0.0001)
+
+        # Release the Read Lock, now that we've finished driving the HX711
+        # serial interface.
+        self.readLock.release()           
+
 
     def power_up(self):
+        # Wait for and get the Read Lock, incase another thread is already
+        # driving the HX711 serial interface.
+        self.readLock.acquire()
+
+        # Lower the HX711 Digital Serial Clock (PD_SCK) line.
         GPIO.output(self.PD_SCK, False)
+
+        # Wait 100 us for the HX711 to power back up.
         time.sleep(0.0001)
+
+        # Release the Read Lock, now that we've finished driving the HX711
+        # serial interface.
+        self.readLock.release()
+
+        # HX711 will now be defaulted to Channel A with gain of 128.  If this
+        # isn't what client software has requested from us, take a sample and
+        # throw it away, so that next sample from the HX711 will be from the
+        # correct channel/gain.
+        if self.get_gain() != 128:
+            self.readRawBytes()
+
 
     def reset(self):
         self.power_down()
         self.power_up()
 
-    # -------------------- Curatenie --------------------
+def hx711_add_event_detect(hx711_instance, event_callback):
+        GPIO.add_event_detect(self.DOUT, GPIO.FALLING, 
+            callback=event_callback)
 
-    def cleanup(self):
-        GPIO.cleanup((self.PD_SCK, self.DOUT))
+# EOF - hx711.py

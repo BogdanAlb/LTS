@@ -1,66 +1,81 @@
-# hx711_reader.py
-# Cititor simplu pentru HX711 bazat pe driverul de mai sus.
-# Necesita: hx711.py in acelasi folder si RPi.GPIO instalat.
-
+# -*- coding: utf-8 -*-
 import time
+import sys
+import termios
+import tty
+import select
+import RPi.GPIO as GPIO
 from hx711 import HX711
 
+# ---------- settings ----------
+DOUT_PIN = 5   # BCM 5
+SCK_PIN  = 6   # BCM 6
+REFERENCE_UNIT = -44.021   # adjust after calibration
+INTERVAL_SEC = 0.5    # 50 ms
+# ------------------------------
 
-# Ajusteaza dupa calibrarea ta. 114 ~ grame (exemplu).
-REFERENCE_UNIT = 114
-
-class HX711Reader:
-    def __init__(self, dout_pin: int, sck_pin: int, reference_unit: float = REFERENCE_UNIT):
-        self.hx = HX711(dout_pin, sck_pin)
-        self.hx.set_reference_unit(reference_unit)
-
-        # Ne fixam pe canalul A @128x (standard) si facem tare pe acelasi canal:
-        self.hx.set_gain(128)
-        self.hx.tare()
-        print("[HX711] Init OK. Canal A @128x. Tare complet.")
-
-    def read_grams(self, samples: int = 7):
-        """Returneaza greutatea in grame (rotunjita la 2 zecimale)."""
-        try:
-            value_g = self.hx.get_weight_A(samples)
-            return round(value_g, 2)
-        except Exception as e:
-            print(f"[HX711Reader] Eroare la citire: {e}")
-            return None
-
-    def read_kilograms(self, samples: int = 7):
-        g = self.read_grams(samples)
-        return None if g is None else round(g / 1000.0, 4)
-
-    def zero(self, samples: int = 15):
-        """Realizeaza o noua 'tare' pe canalul A @128x."""
-        self.hx.set_gain(128)
-        self.hx.tare(samples)
-        print("[HX711Reader] Tare realizat.")
-
-    def close(self):
-        """Optional, curata pinii cand inchizi aplicatia."""
-        try:
-            self.hx.cleanup()
-        except Exception:
-            pass
-
-
-# Exemplu de utilizare directa:
-if __name__ == "__main__":
-    # Inlocuieste cu pinii tai BCM (de ex. DOUT=5, SCK=6)
-    DOUT_PIN = 5
-    SCK_PIN = 6
-
-    reader = HX711Reader(DOUT_PIN, SCK_PIN, reference_unit=REFERENCE_UNIT)
-
+def clean_and_exit():
+    print("\nCleaning GPIO and exit...")
     try:
-        while True:
-            grams = reader.read_grams(samples=7)
-            if grams is not None:
-                print(f"Greutate: {grams} g")
-            time.sleep(0.1)
-    except KeyboardInterrupt:
-        print("\nIesire.")
+        GPIO.cleanup()
+    except Exception:
+        pass
+    sys.exit(0)
+
+def get_key_nonblocking():
+    """Return one char if a key is pressed, else None (no Enter needed)."""
+    dr, _, _ = select.select([sys.stdin], [], [], 0)
+    if not dr:
+        return None
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    try:
+        tty.setraw(fd)
+        ch = sys.stdin.read(1)
     finally:
-        reader.close()
+        termios.tcsetattr(fd, termios.TCSADRAIN, old)
+    return ch
+
+# Reduce duplicate "channel in use" warnings
+GPIO.setwarnings(False)
+
+# tatobari/hx711py API:
+hx = HX711(DOUT_PIN, SCK_PIN)
+hx.set_reading_format("MSB", "MSB")
+hx.set_reference_unit(REFERENCE_UNIT)
+hx.reset()
+hx.tare()
+
+print("Initial tare done. Press 'T' to tare, 'Q' to quit. Printing every 0.05 s.")
+print("")
+
+next_t = time.monotonic()
+try:
+    while True:
+        # Read one sample for low latency (increase to 2-5 for smoothing)
+        grams = hx.get_weight(7)   
+        grams_rounded = int(grams / 10) * 10  # rotunjire la 10 grame
+        weight_kg = grams_rounded / 1000.0
+        
+        print(f"\rWeight: {weight_kg:0.3f} kg", end="", flush=True)
+
+        key = get_key_nonblocking()
+        if key:
+            k = key.lower()
+            if k == 't':
+                print("\nTare in progress...")
+                hx.tare()
+                print("Tare done.")
+            elif k == 'q':
+                clean_and_exit()
+
+        # precise 50 ms pacing
+        next_t += INTERVAL_SEC
+        sleep_time = next_t - time.monotonic()
+        if sleep_time > 0:
+            time.sleep(sleep_time)
+        else:
+            next_t = time.monotonic()
+
+except (KeyboardInterrupt, SystemExit):
+    clean_and_exit()
