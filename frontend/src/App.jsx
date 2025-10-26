@@ -32,10 +32,15 @@ export default function App() {
 
   // Resetează tara
   const handleTare = async () => {
-    await fetch("http://192.168.0.183:8000/sensors/hx711", { method: "POST" })
-      .then(() => console.log("Tare requested"))
-      .catch((err) => console.error("Tare error:", err));
-  };
+  try {
+    await fetch("http://192.168.0.183:8000/sensors/hx711/tare", {
+      method: "POST",
+    });
+    console.log("Tare requested successfully");
+  } catch (err) {
+    console.error("Tare error:", err);
+  }
+};
 
   // Curățare la demontare
   useEffect(() => {
