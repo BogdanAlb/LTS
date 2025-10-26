@@ -67,8 +67,9 @@ const handleTare = async () => {
   }, [intervalId]);
 
   return (
+  <>
+    <StatusBar />  {/* 🔹 Bara fixă, în colțul stâng sus */}
     <div className="app-container">
-      <StatusBar />  {/* 🔹 Bara din colțul stâng sus */}
       <h2>Live Weight</h2>
       <div className="weight-display">
         {weight !== null ? `${weight} g` : "-- g"}
@@ -80,5 +81,6 @@ const handleTare = async () => {
       </div>
       {message && <div className="status-message">{message}</div>}
     </div>
-  );
+  </>
+);
 }
