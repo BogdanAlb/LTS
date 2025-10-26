@@ -10,8 +10,8 @@ from hx711 import HX711
 # ---------- settings ----------
 DOUT_PIN = 5   # BCM 5
 SCK_PIN  = 6   # BCM 6
-REFERENCE_UNIT = -44.021   # adjust after calibration
-INTERVAL_SEC = 0.5    # 50 ms
+SCALE_RATIO = 44.3   # echivalent cu REFERENCE_UNIT inversat
+INTERVAL_SEC = 0.5         # 500 ms
 # ------------------------------
 
 def clean_and_exit():
@@ -36,40 +36,40 @@ def get_key_nonblocking():
         termios.tcsetattr(fd, termios.TCSADRAIN, old)
     return ch
 
-# Reduce duplicate "channel in use" warnings
+# ---------- GPIO init ----------
+GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
+# -------------------------------
 
-# tatobari/hx711py API:
-hx = HX711(DOUT_PIN, SCK_PIN)
-hx.set_reading_format("MSB", "MSB")
-hx.set_reference_unit(REFERENCE_UNIT)
+# ---------- HX711 init ----------
+hx = HX711(dout_pin=DOUT_PIN, pd_sck_pin=SCK_PIN)
 hx.reset()
-hx.tare()
+hx.zero()
+hx.set_scale_ratio(SCALE_RATIO)
+# -------------------------------
 
-print("Initial tare done. Press 'T' to tare, 'Q' to quit. Printing every 0.05 s.")
+print("Initial tare done. Press 'T' to tare, 'Q' to quit.")
 print("")
 
 next_t = time.monotonic()
 try:
     while True:
-        # Read one sample for low latency (increase to 2-5 for smoothing)
-        grams = hx.get_weight(7)   
-        grams_rounded = int(grams / 10) * 10  # rotunjire la 10 grame
-        weight_kg = grams_rounded / 1000.0
-        
-        print(f"\rWeight: {weight_kg:0.3f} kg", end="", flush=True)
+        # Citește o medie de 7 probe
+        grams = hx.get_weight_mean(7)
+        grams_rounded = int(grams / 10) * 10
+        print(f"\rWeight: {grams_rounded:.0f} g ({grams_rounded/1000:.3f} kg)", end="", flush=True)
 
         key = get_key_nonblocking()
         if key:
             k = key.lower()
             if k == 't':
                 print("\nTare in progress...")
-                hx.tare()
+                hx.zero()
                 print("Tare done.")
             elif k == 'q':
                 clean_and_exit()
 
-        # precise 50 ms pacing
+        # temporizare precisă
         next_t += INTERVAL_SEC
         sleep_time = next_t - time.monotonic()
         if sleep_time > 0:
