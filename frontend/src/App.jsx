@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import GaugeDisplay from "./components/GaugeDisplay";
 import ControlPanel from "./components/ControlPanel";
 import { getCurrentWeight } from "./api/sensor";
+import "./App.css";
 
 export default function App() {
   const [weight, setWeight] = useState(null);
