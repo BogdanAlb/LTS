@@ -119,4 +119,40 @@ button.stop {
   50% {
     text-shadow: 0 0 5px #22d3ee;
   }
+
+}  
+  /* === Bara de status IoT (colțul stâng sus) === */
+.status-bar {
+  position: fixed;
+  top: 15px;
+  left: 20px;
+  padding: 8px 18px;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+  z-index: 100;
+}
+
+.status-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.status-bar .wifi.online {
+  color: #10b981; /* verde */
+}
+
+.status-bar .wifi.offline {
+  color: #ef4444; /* roșu */
+}
+
+.status-bar .date,
+.status-bar .time {
+  font-family: "Inter", monospace;
 }

@@ -3,6 +3,7 @@ import GaugeDisplay from "./components/GaugeDisplay";
 import ControlPanel from "./components/ControlPanel";
 import { getCurrentWeight } from "./api/sensor";
 import "./App.css";
+import StatusBar from "./components/StatusBar";
 
 export default function App() {
   const [weight, setWeight] = useState(null);
@@ -66,17 +67,18 @@ const handleTare = async () => {
   }, [intervalId]);
 
   return (
-  <div className="app-container">
-    <h2>Live Weight</h2>
-    <div className="weight-display">
-      {weight !== null ? `${weight} g` : "-- g"}
+    <div className="app-container">
+      <StatusBar />  {/* 🔹 Bara din colțul stâng sus */}
+      <h2>Live Weight</h2>
+      <div className="weight-display">
+        {weight !== null ? `${weight} g` : "-- g"}
+      </div>
+      <div className="flex gap-4">
+        <button onClick={handleTare} className="tare">Tare</button>
+        <button onClick={handleStart} className="start">Start</button>
+        <button onClick={handleStop} className="stop">Stop</button>
+      </div>
+      {message && <div className="status-message">{message}</div>}
     </div>
-    <div className="flex gap-4">
-      <button onClick={handleTare} className="tare">Tare</button>
-      <button onClick={handleStart} className="start">Start</button>
-      <button onClick={handleStop} className="stop">Stop</button>
-    </div>
-    {message && <div className="status-message">{message}</div>}
-  </div>
-);
+  );
 }
