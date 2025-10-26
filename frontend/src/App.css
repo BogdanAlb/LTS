@@ -1,42 +1,122 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* === App.css - Design Profesional pentru LTS Weight Monitor === */
+
+/* Fundal general */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: radial-gradient(circle at top, #1f2937, #111827);
+  color: #ffffff;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Container principal */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  padding: 2.5rem 4rem;
+  box-shadow: 0 0 20px rgba(0, 255, 150, 0.15);
+  transition: transform 0.3s ease;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.app-container:hover {
+  transform: scale(1.01);
+}
+
+/* Titlu principal */
+h2 {
+  font-size: 2rem;
+  letter-spacing: 1px;
+  color: #10b981;
+}
+
+/* Afișaj greutate */
+.weight-display {
+  font-size: 4rem;
+  font-weight: 700;
+  color: #22d3ee;
+  text-shadow: 0 0 15px rgba(34, 211, 238, 0.6);
+  transition: all 0.2s ease-in-out;
+}
+
+.weight-display.small {
+  font-size: 2rem;
+  color: #9ca3af;
+}
+
+/* Butoane */
+button {
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  padding: 0.9rem 2.2rem;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* Butoane specifice */
+button.tare {
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+}
+
+button.start {
+  background: linear-gradient(90deg, #059669, #10b981);
+}
+
+button.stop {
+  background: linear-gradient(90deg, #dc2626, #ef4444);
+}
+
+/* Mesaj status */
+.status-message {
+  margin-top: 1rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #facc15;
+  animation: fadeInOut 3s ease forwards;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
   }
-  to {
-    transform: rotate(360deg);
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* Animație încărcare live */
+@keyframes pulse {
+  0%, 100% {
+    text-shadow: 0 0 10px #22d3ee, 0 0 20px #22d3ee;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  50% {
+    text-shadow: 0 0 5px #22d3ee;
+  }
 }

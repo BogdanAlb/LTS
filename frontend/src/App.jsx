@@ -65,15 +65,17 @@ const handleTare = async () => {
   }, [intervalId]);
 
   return (
-  <div className="min-h-screen flex flex-col items-center justify-center bg-gray-800 text-white">
-    <GaugeDisplay value={weight} />
-    <ControlPanel onTare={handleTare} onStart={handleStart} onStop={handleStop} />
-    
-    {message && (
-      <div className="mt-4 text-lg font-semibold">
-        {message}
-      </div>
-    )}
+  <div className="app-container">
+    <h2>Live Weight</h2>
+    <div className="weight-display">
+      {weight !== null ? `${weight} g` : "-- g"}
+    </div>
+    <div className="flex gap-4">
+      <button onClick={handleTare} className="tare">Tare</button>
+      <button onClick={handleStart} className="start">Start</button>
+      <button onClick={handleStop} className="stop">Stop</button>
+    </div>
+    {message && <div className="status-message">{message}</div>}
   </div>
 );
 }
