@@ -1,9 +1,92 @@
-INFO:     Started server process [37323]
+INFO:     Started server process [13452]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     192.168.0.221:49299 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49248 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49247 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49250 - "POST /sensors/hx711/tare HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49250 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49250 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49250 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49250 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49250 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49250 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49250 - "GET /sensors/hx711 HTTP/1.1" 200 OK
+INFO:     192.168.0.221:49249 - "GET /sensors/hx711 HTTP/1.1" 200 OK
 INFO:     Shutting down
 INFO:     Waiting for application shutdown.
 INFO:     Application shutdown complete.
-INFO:     Finished server process [37323]
+INFO:     Finished server process [13452]
