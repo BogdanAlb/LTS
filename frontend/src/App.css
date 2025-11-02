@@ -58,11 +58,11 @@ h2 {
 
 /* Butoane */
 button {
-  font-size: 1.1rem;
+  font-size: 1.9rem;
   font-weight: 600;
   border: none;
   padding: 0.9rem 2.2rem;
-  border-radius: 10px;
+  border-radius: 32px;
   color: #fff;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -93,10 +93,10 @@ button.stop {
 /* Mesaj status */
 .status-message {
   margin-top: 1rem;
-  font-size: 1.rem;
+  font-size: 4.rem;
   font-weight: 500;
   color: #facc15;
-  animation: fadeInOut 3s ease forwards;
+  animation: fadeInOut 4s ease forwards;
 }
 
 @keyframes fadeInOut {
@@ -120,7 +120,7 @@ button.stop {
     text-shadow: 0 0 10px #22d3ee, 0 0 20px #22d3ee;
   }
   50% {
-    text-shadow: 0 0 5px #22d3ee;
+    text-shadow: 0 0 5px #090d0e;
   }
 
 }  
