@@ -4,6 +4,7 @@ import ControlPanel from "./components/ControlPanel";
 import { getCurrentWeight } from "./api/sensor";
 import "./App.css";
 import StatusBar from "./components/StatusBar";
+import topLogo from "./assets/lts-logo.png";
 
 export default function App() {
   const [weight, setWeight] = useState(null);
@@ -78,6 +79,9 @@ const handleTare = async () => {
         <button onClick={handleTare} className="tare">Tare</button>
         <button onClick={handleStart} className="start">Start</button>
         <button onClick={handleStop} className="stop">Stop</button>
+      </div>
+      <div className="logo-container">
+        <img src={topLogo} alt="LTS Logo" className="logo" />
       </div>
       {message && <div className="status-message">{message}</div>}
     </div>

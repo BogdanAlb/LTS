@@ -180,3 +180,16 @@ button.stop {
   font-size: calc(1em * 1.20);
   font-weight: 700;
 }
+
+.brandCorner{
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 9999;
+  pointer-events: none; /* scoate dacă vrei logo clickabil */
+}
+.brandLogo{
+  height: 44px;  /* ajustează după gust */
+  width: auto;
+  opacity: 0.95;
+}
