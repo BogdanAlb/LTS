@@ -66,3 +66,6 @@ INFO:     192.168.0.183:36884 - "GET /sensors/wifi HTTP/1.1" 200 OK
 INFO:     192.168.0.221:49825 - "GET /sensors/wifi HTTP/1.1" 200 OK
 INFO:     192.168.0.183:36884 - "GET /sensors/wifi HTTP/1.1" 200 OK
 INFO:     192.168.0.183:36884 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.183:36884 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.183:36884 - "GET /sensors/wifi HTTP/1.1" 200 OK
+INFO:     192.168.0.183:36884 - "GET /sensors/wifi HTTP/1.1" 200 OK
