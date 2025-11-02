@@ -4,21 +4,21 @@
 > Recomandare VS Code: instalează extensia **Todo Tree** (ms-vscode.vscode-todo-tree) pentru panoul de TODO-uri.
 
 ## 0) Pregătire Raspberry Pi
-- [x] Flash **Raspberry Pi OS (64-bit)**
-- [x] `raspi-config` → activează **I2C**, **SPI**, **Serial**, **SSH**
-- [x] Instalează pachete: `git`, `python3-venv`, `build-essential`, `cups`, `libcups2-dev`, `chromium-browser`, `wkhtmltopdf`, `mosquitto`, `mosquitto-clients`, `libopenjp2-7`, `libtiff5`
-- [ ] Adaugă utilizatorul în grupuri: `lp`, `lpadmin`, `i2c`, `spi`, `gpio`
+- [X] Flash **Raspberry Pi OS (64-bit)**
+- [X] `raspi-config` → activează **I2C**, **SPI**, **Serial**, **SSH**
+- [X] Instalează pachete: `git`, `python3-venv`, `build-essential`, `cups`, `libcups2-dev`, `chromium-browser`, `wkhtmltopdf`, `mosquitto`, `mosquitto-clients`, `libopenjp2-7`, `libtiff5`
+- [X] Adaugă utilizatorul în grupuri: `lp`, `lpadmin`, `i2c`, `spi`, `gpio`
 - [ ] CUPS: adaugă imprimanta și **tipărește o pagină de test**
 
 ## 1) Repo & structură mono-repo
-- [ ] Inițializează repo: `pi-kiosk/` (sau **LTS/**)
-- [ ] Creează directoare: `backend/`, `frontend/`, `deploy/`, `templates/`
-- [x] Adaugă `.editorconfig`, `.gitignore`, `README.md`
-- [x] Decide manager de pachete JS (**npm/pnpm**), stilizare și convenții
+- [X] Inițializează repo: `pi-kiosk/` (sau **LTS/**)
+- [X] Creează directoare: `backend/`, `frontend/`, `deploy/`, `templates/`
+- [X] Adaugă `.editorconfig`, `.gitignore`, `README.md`
+- [X] Decide manager de pachete JS (**npm/pnpm**), stilizare și convenții
 
 ## 2) Backend — schelet (FastAPI sau NestJS/Express)
-- [x] Creează **venv** și instalează dependențe (FastAPI/NestJS, SQLAlchemy/TypeORM, Alembic etc.)
-- [ ] Endpoint minim: `GET /api/health`
+- [X] Creează **venv** și instalează dependențe (FastAPI/NestJS, SQLAlchemy/TypeORM, Alembic etc.)
+- [X] Endpoint minim: `GET /api/health`
 - [ ] Configurare **SQLite (WAL)** + pragmas, conexiune thread-safe
 - [ ] **Alembic** init + prima migrare
 
