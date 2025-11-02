@@ -3,7 +3,14 @@
 > vite --host 0.0.0.0 --port 5173 --strictPort
 
 
-  VITE v7.1.11  ready in 832 ms
+  VITE v7.1.11  ready in 829 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: http://192.168.0.183:5173/
+10:06:24 [vite] (client) hmr update /src/App.css
+10:06:26 [vite] (client) hmr update /src/App.css
+10:06:42 [vite] (client) hmr update /src/App.css
+10:06:44 [vite] (client) hmr update /src/App.css
+10:06:50 [vite] (client) hmr update /src/App.css
+10:06:51 [vite] (client) hmr update /src/App.css
+10:06:57 [vite] (client) hmr update /src/App.css

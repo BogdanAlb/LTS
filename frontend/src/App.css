@@ -1,6 +1,9 @@
 /* === App.css - Design Profesional pentru LTS Weight Monitor === */
 
 /* Fundal general */
+:root{
+  --bar-scale: 1.4; /* Scalare pentru bara de status */
+}
 body {
   margin: 0;
   padding: 0;
@@ -90,7 +93,7 @@ button.stop {
 /* Mesaj status */
 .status-message {
   margin-top: 1rem;
-  font-size: 1.3rem;
+  font-size: 1.rem;
   font-weight: 500;
   color: #facc15;
   animation: fadeInOut 3s ease forwards;
@@ -127,18 +130,19 @@ button.stop {
   top: 0;
   left: 0;
   width: 98%; /* 🔹 ocupă întreaga lățime */
-  padding: 10px 20px;
+  padding: calc(10px * var(--bar-scale)) calc(20px * var(--bar-scale));
   background: rgba(17, 24, 39, 0.75); /* fundal semi-transparent */
   backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   color: #e5e7eb;
-  font-size: 0.95rem;
+  font-size: calc(0.95rem * var(--bar-scale));
   font-weight: 500;
   letter-spacing: 0.5px;
   display: flex;
   align-items: center;
   justify-content: space-between; /* 📅 ora în dreapta, Wi-Fi în stânga */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 calc(4px *var(--bar-scale)) calc(12px * var(--bar-scale)) rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
   z-index: 9999;
 }
 
@@ -173,6 +177,6 @@ button.stop {
 /* Data și ora */
 .status-bar .date,
 .status-bar .time {
-  font-family: "Inter", monospace;
-  opacity: 0.9;
+  font-size: calc(1em * 1.20);
+  font-weight: 700;
 }
