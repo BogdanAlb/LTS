@@ -62,3 +62,14 @@
 ✅ Frontend UP — log: /home/bogdan/LTS/.logs/frontend.log
 ⚠️  Un serviciu nu rulează. Verifică log-urile.
 ℹ️  Apasă Ctrl+C aici ca să oprești ambele procese.
+⏳ Pornesc serviciile...
+✅ Backend UP — log: /home/bogdan/LTS/.logs/backend.log
+✅ Frontend UP — log: /home/bogdan/LTS/.logs/frontend.log
+
+🌐 Link-uri:
+   Backend:  http://localhost:8000
+            (LAN) http://192.168.0.183:8000
+   Frontend: http://localhost:5173
+            (LAN) http://192.168.0.183:5173
+
+ℹ️  Apasă Ctrl+C aici ca să oprești ambele procese.
