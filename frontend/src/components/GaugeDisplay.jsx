@@ -1,10 +1,12 @@
-import React from "react";
-
 export default function GaugeDisplay({ value }) {
+  const hasValue = typeof value === "number";
+
   return (
-    <div className="flex flex-col items-center justify-center bg-gray-900 text-white p-6 rounded-xl shadow-lg">
-      <h2 className="text-2xl mb-2">Live Weight</h2>
-      <div className="text-6xl font-bold text-green-400">{value ?? "--"} g</div>
+    <div className="gauge-display">
+      <h2>Live Weight</h2>
+      <div className={`weight-display ${hasValue ? "" : "small"}`}>
+        {hasValue ? `${value} g` : "-- g"}
+      </div>
     </div>
   );
 }

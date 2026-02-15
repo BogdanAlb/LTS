@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = "http://192.168.0.183:8000"; // backend-ul FastAPI
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://192.168.0.183:8000";
 
 
 // Funcție pentru a obține greutatea curentă de la senzorul HX711
@@ -11,6 +11,16 @@ export async function getCurrentWeight() {
   } catch (error) {
     console.error("Error fetching weight:", error);
     return null;
+  }
+}
+
+export async function tareScale() {
+  try {
+    await axios.post(`${API_BASE}/sensors/hx711/tare`);
+    return true;
+  } catch (error) {
+    console.error("Error calling tare:", error);
+    return false;
   }
 }
 
