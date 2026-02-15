@@ -3,14 +3,45 @@
   --bg-2: #0a1524;
   --bg-3: #040b15;
   --card: rgba(12, 25, 44, 0.72);
+  --card-elevated: rgba(15, 33, 56, 0.75);
+  --panel-bg: rgba(8, 20, 36, 0.78);
+  --panel-soft-bg: rgba(7, 17, 30, 0.86);
+  --status-bg: rgba(2, 6, 23, 0.85);
+  --status-line: rgba(148, 163, 184, 0.25);
   --line: rgba(148, 163, 184, 0.24);
   --text: #e2e8f0;
   --muted: #94a3b8;
   --accent: #22d3ee;
+  --title: #8ee9fb;
+  --subtitle-strong: #6ee7ff;
   --ok: #10b981;
   --warn: #facc15;
   --danger: #ef4444;
   --radius: 16px;
+  --app-font-weight: 400;
+
+  /* UI scale: mareste tot textul/spacing care e in rem */
+  font-size: clamp(16px, 0.6vw + 14px, 20px);
+}
+
+:root[data-theme="day"] {
+  --bg-1: #eff6ff;
+  --bg-2: #dbeafe;
+  --bg-3: #bfdbfe;
+  --card: rgba(255, 255, 255, 0.92);
+  --card-elevated: rgba(255, 255, 255, 0.94);
+  --panel-bg: rgba(255, 255, 255, 0.96);
+  --panel-soft-bg: rgba(248, 250, 252, 0.98);
+  --status-bg: rgba(248, 250, 252, 0.95);
+  --status-line: rgba(15, 23, 42, 0.14);
+  --line: rgba(15, 23, 42, 0.14);
+  --text: #0f172a;
+  --muted: #475569;
+  --accent: #0284c7;
+  --title: #0369a1;
+  --subtitle-strong: #0c4a6e;
+  --warn: #b45309;
+  --app-font-weight: 300;
 }
 
 * {
@@ -21,6 +52,7 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: var(--app-font-weight);
   background: radial-gradient(circle at 8% 2%, var(--bg-1), var(--bg-2) 48%, var(--bg-3));
   color: var(--text);
 }
@@ -35,8 +67,8 @@ code {
 }
 
 .main-header {
-  max-width: 1080px;
-  margin: 0 auto 1rem;
+  width: 100%;
+  margin: 0 0 1rem;
   padding: 1rem 1.25rem;
   background: var(--card);
   border: 1px solid var(--line);
@@ -83,7 +115,11 @@ code {
   color: var(--text);
   text-decoration: none;
   border: 1px solid transparent;
-  padding: 0.5rem 0.9rem;
+  padding: 0.65rem 1.05rem;
+  font-size: 1rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   border-radius: 999px;
   font-weight: 600;
   transition: all 0.2s ease;
@@ -99,8 +135,8 @@ code {
 }
 
 .main-content {
-  max-width: 1080px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
 }
 
 .page {
@@ -113,7 +149,7 @@ code {
 .page-title {
   margin: 0 0 0.5rem;
   font-size: 1.9rem;
-  color: #8ee9fb;
+  color: var(--title);
 }
 
 .page-subtitle {
@@ -134,7 +170,7 @@ code {
   padding: 1rem;
   border-radius: 12px;
   border: 1px solid rgba(148, 163, 184, 0.24);
-  background: rgba(15, 33, 56, 0.75);
+  background: var(--card-elevated);
   transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
@@ -167,7 +203,7 @@ code {
 .gauge-display h2 {
   margin: 0 0 0.85rem;
   font-size: 1.8rem;
-  color: #6ee7ff;
+  color: var(--subtitle-strong);
 }
 
 .weight-display {
@@ -191,12 +227,14 @@ code {
 }
 
 button {
-  font-size: 1.02rem;
+  font-size: 1.05rem;
   font-weight: 700;
   border: none;
   border-radius: 999px;
   color: #f8fafc;
-  padding: 0.66rem 1.4rem;
+  padding: 0.8rem 1.6rem;
+  min-height: 48px;
+  min-width: 140px;
   cursor: pointer;
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
@@ -243,7 +281,7 @@ button.export {
   min-height: 460px;
   border: 1px solid rgba(148, 163, 184, 0.24);
   border-radius: 14px;
-  background: rgba(8, 20, 36, 0.78);
+  background: var(--panel-bg);
   padding: 1rem;
 }
 
@@ -254,7 +292,7 @@ button.export {
 .graph-card-title {
   margin: 0 0 0.7rem;
   font-weight: 700;
-  color: #8ee9fb;
+  color: var(--title);
 }
 
 .graph-svg {
@@ -271,7 +309,7 @@ button.export {
   width: min(360px, 36vw);
   border-radius: 12px;
   border: 1px solid rgba(148, 163, 184, 0.28);
-  background: rgba(7, 17, 30, 0.86);
+  background: var(--panel-soft-bg);
   padding: 1rem;
 }
 
@@ -304,7 +342,7 @@ button.export {
 }
 
 .info-card {
-  background: rgba(15, 33, 56, 0.75);
+  background: var(--card-elevated);
   border: 1px solid rgba(148, 163, 184, 0.24);
   border-radius: 12px;
   padding: 1rem;
@@ -346,7 +384,7 @@ button.export {
 }
 
 .language-button {
-  background: rgba(2, 6, 23, 0.45);
+  background: var(--panel-soft-bg);
   border: 1px solid rgba(148, 163, 184, 0.35);
   color: var(--text);
   padding: 0.55rem 1rem;
@@ -359,6 +397,171 @@ button.export {
 .language-button.active {
   background: linear-gradient(130deg, rgba(34, 211, 238, 0.32), rgba(16, 185, 129, 0.34));
   border-color: rgba(34, 211, 238, 0.8);
+}
+
+.theme-buttons {
+  margin-top: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.theme-button {
+  background: var(--panel-soft-bg);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: var(--text);
+  padding: 0.55rem 1rem;
+}
+
+.theme-button:hover {
+  border-color: rgba(34, 211, 238, 0.45);
+}
+
+.theme-button.active {
+  background: linear-gradient(130deg, rgba(34, 211, 238, 0.32), rgba(16, 185, 129, 0.34));
+  border-color: rgba(34, 211, 238, 0.8);
+}
+
+.user-switch {
+  margin-top: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.user-chip {
+  min-width: 0;
+  min-height: 42px;
+  padding: 0.55rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--panel-soft-bg);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.user-chip.active {
+  background: linear-gradient(130deg, rgba(34, 211, 238, 0.32), rgba(16, 185, 129, 0.34));
+  border-color: rgba(34, 211, 238, 0.8);
+}
+
+.user-form {
+  margin-top: 0.9rem;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(160px, 220px) auto;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.user-input,
+.user-select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: var(--panel-soft-bg);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.user-input::placeholder {
+  color: var(--muted);
+}
+
+.user-action-button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.55rem 0.95rem;
+  font-size: 0.95rem;
+  background: linear-gradient(130deg, #0ea5e9, #22c55e);
+}
+
+.user-list {
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.user-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  background: var(--panel-soft-bg);
+}
+
+.user-main {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.user-name {
+  font-weight: 700;
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+}
+
+.role-badge.admin {
+  color: #064e3b;
+  background: rgba(16, 185, 129, 0.28);
+  border-color: rgba(16, 185, 129, 0.55);
+}
+
+.role-badge.restricted {
+  color: #7c2d12;
+  background: rgba(251, 191, 36, 0.28);
+  border-color: rgba(217, 119, 6, 0.55);
+}
+
+:root[data-theme="day"] .role-badge.admin {
+  color: #065f46;
+}
+
+:root[data-theme="day"] .role-badge.restricted {
+  color: #92400e;
+}
+
+.user-delete {
+  min-width: 0;
+  min-height: 38px;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.88rem;
+  background: linear-gradient(130deg, #dc2626, #ef4444);
+}
+
+.user-delete:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.user-message {
+  margin: 0.75rem 0 0;
+  color: var(--warn);
+  font-size: 0.92rem;
+}
+
+.user-permission-note {
+  margin-top: 0.65rem;
+  color: var(--muted);
 }
 
 .not-found {
@@ -382,14 +585,14 @@ button.export {
   right: 0;
   z-index: 9999;
   padding: 0.7rem 1rem;
-  background: rgba(2, 6, 23, 0.85);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+  background: var(--status-bg);
+  border-bottom: 1px solid var(--status-line);
   backdrop-filter: blur(8px);
 }
 
 .status-content {
-  max-width: 1080px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -453,5 +656,18 @@ button.export {
 
   .graph-live-panel .button-row {
     justify-content: center;
+  }
+
+  .user-form {
+    grid-template-columns: 1fr;
+  }
+
+  .user-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-delete {
+    width: 100%;
   }
 }

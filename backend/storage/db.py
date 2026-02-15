@@ -6,6 +6,19 @@ from typing import Generator, Optional
 # Path to DB file (backend/storage/lts.db)
 DB_PATH = Path(__file__).resolve().parent / "lts.db"
 
+USERS_SCHEMA_SQL = """
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL UNIQUE COLLATE NOCASE,
+    role TEXT NOT NULL CHECK (role IN ('admin', 'restricted')),
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+INSERT INTO users (username, role)
+SELECT 'admin', 'admin'
+WHERE NOT EXISTS (SELECT 1 FROM users);
+"""
+
 
 def _apply_pragmas(conn: sqlite3.Connection) -> None:
     """Apply connection/database pragmas.
@@ -31,6 +44,7 @@ def init_db(schema_sql: Optional[str] = None) -> None:
     conn = sqlite3.connect(DB_PATH)
     try:
         _apply_pragmas(conn)
+        conn.executescript(USERS_SCHEMA_SQL)
         if schema_sql:
             conn.executescript(schema_sql)
         conn.commit()

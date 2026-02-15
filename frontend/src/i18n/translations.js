@@ -6,9 +6,8 @@ export const LANGUAGE_LOCALES = {
 
 export const translations = {
   ro: {
-    appName: "LTS Weight Monitor",
+    appName: "Preload System",
     layout: {
-      subtitle: "Structura clara pe pagina principala si ramuri",
       navigationAria: "Navigare principala",
       nav: {
         home: "Principal",
@@ -24,7 +23,7 @@ export const translations = {
       branches: {
         dashboard: {
           title: "Dashboard",
-          description: "Citire live pentru greutate, cu comenzi Start, Stop si Tare.",
+          description: "Citire live, cu comenzi Start, Stop si Tare.",
         },
         graph: {
           title: "Grafic",
@@ -36,7 +35,7 @@ export const translations = {
         },
         settings: {
           title: "Setari",
-          description: "Mapare rute si puncte de configurare pentru frontend/API.",
+          description: "",
         },
       },
     },
@@ -86,6 +85,8 @@ export const translations = {
       subtitle: "Pentru backend configurabil, poti seta variabila de mediu",
       language: "Alegere limba",
       selectedLanguage: "Limba selectata",
+      appearance: "Aspect",
+      selectedTheme: "Mod selectat",
       routes: "Ramuri frontend",
       routeDescriptions: {
         home: "Pagina principala",
@@ -99,6 +100,38 @@ export const translations = {
         en: "Engleza",
         de: "Germana",
       },
+      themeNames: {
+        day: "Mod de zi",
+        night: "Mod de noapte",
+      },
+      userRoles: {
+        admin: "Admin",
+        restricted: "Restrans",
+      },
+      users: {
+        title: "Utilizatori",
+        subtitle: "Admin are drepturi depline: poate adauga sau sterge utilizatori.",
+        loading: "Se incarca utilizatorii...",
+        activeUser: "Utilizator activ",
+        none: "Niciun utilizator disponibil",
+        usernameLabel: "Nume utilizator",
+        usernamePlaceholder: "ex: operator_1",
+        roleLabel: "Rol",
+        actions: {
+          add: "Adauga utilizator",
+          delete: "Sterge",
+        },
+        messages: {
+          loadError: "Nu am putut incarca utilizatorii.",
+          noRights: "Utilizatorul activ are drepturi restranse si nu poate administra utilizatori.",
+          invalidName: "Numele trebuie sa aiba 3-32 caractere si doar litere, cifre, punct, underscore sau minus.",
+          created: "Utilizator adaugat.",
+          createError: "Nu am putut adauga utilizatorul.",
+          confirmDelete: "Stergi utilizatorul",
+          deleted: "Utilizator sters.",
+          deleteError: "Nu am putut sterge utilizatorul.",
+        },
+      },
     },
     notFound: {
       title: "Pagina negasita",
@@ -107,7 +140,7 @@ export const translations = {
     },
   },
   en: {
-    appName: "LTS Weight Monitor",
+    appName: "Preload System",
     layout: {
       subtitle: "Clear structure with main page and dedicated branches",
       navigationAria: "Main navigation",
@@ -121,11 +154,11 @@ export const translations = {
     },
     home: {
       title: "Main Page",
-      subtitle: "The frontend is organized with one central page and clear navigation branches.",
+      subtitle: "",
       branches: {
         dashboard: {
           title: "Dashboard",
-          description: "Live weight reading with Start, Stop, and Tare controls.",
+          description: "Live weight with Start, Stop, and Tare controls.",
         },
         graph: {
           title: "Graph",
@@ -137,7 +170,7 @@ export const translations = {
         },
         settings: {
           title: "Settings",
-          description: "Route mapping and frontend/API configuration points.",
+          description: "",
         },
       },
     },
@@ -187,6 +220,8 @@ export const translations = {
       subtitle: "For a configurable backend, set the environment variable",
       language: "Language selection",
       selectedLanguage: "Selected language",
+      appearance: "Appearance",
+      selectedTheme: "Selected mode",
       routes: "Frontend branches",
       routeDescriptions: {
         home: "Main page",
@@ -200,6 +235,38 @@ export const translations = {
         en: "English",
         de: "German",
       },
+      themeNames: {
+        day: "Day mode",
+        night: "Night mode",
+      },
+      userRoles: {
+        admin: "Admin",
+        restricted: "Restricted",
+      },
+      users: {
+        title: "Users",
+        subtitle: "Admins have full rights and can add or delete users.",
+        loading: "Loading users...",
+        activeUser: "Active user",
+        none: "No user available",
+        usernameLabel: "Username",
+        usernamePlaceholder: "e.g. operator_1",
+        roleLabel: "Role",
+        actions: {
+          add: "Add user",
+          delete: "Delete",
+        },
+        messages: {
+          loadError: "Could not load users.",
+          noRights: "The active user has restricted rights and cannot manage users.",
+          invalidName: "Username must be 3-32 chars and only letters, numbers, dot, underscore or minus.",
+          created: "User created.",
+          createError: "Could not create user.",
+          confirmDelete: "Delete user",
+          deleted: "User deleted.",
+          deleteError: "Could not delete user.",
+        },
+      },
     },
     notFound: {
       title: "Page not found",
@@ -208,7 +275,7 @@ export const translations = {
     },
   },
   de: {
-    appName: "LTS Gewichtsmonitor",
+    appName: "Preload System",
     layout: {
       subtitle: "Klare Struktur mit Hauptseite und zugehorigen Bereichen",
       navigationAria: "Hauptnavigation",
@@ -288,6 +355,8 @@ export const translations = {
       subtitle: "Fuer ein konfigurierbares Backend setze die Umgebungsvariable",
       language: "Sprachauswahl",
       selectedLanguage: "Ausgewaehlte Sprache",
+      appearance: "Darstellung",
+      selectedTheme: "Ausgewaehlter Modus",
       routes: "Frontend-Bereiche",
       routeDescriptions: {
         home: "Hauptseite",
@@ -300,6 +369,38 @@ export const translations = {
         ro: "Rumaenisch",
         en: "Englisch",
         de: "Deutsch",
+      },
+      themeNames: {
+        day: "Tagesmodus",
+        night: "Nachtmodus",
+      },
+      userRoles: {
+        admin: "Admin",
+        restricted: "Eingeschraenkt",
+      },
+      users: {
+        title: "Benutzer",
+        subtitle: "Admins haben volle Rechte und koennen Benutzer hinzufuegen oder loeschen.",
+        loading: "Benutzer werden geladen...",
+        activeUser: "Aktiver Benutzer",
+        none: "Kein Benutzer verfuegbar",
+        usernameLabel: "Benutzername",
+        usernamePlaceholder: "z. B. operator_1",
+        roleLabel: "Rolle",
+        actions: {
+          add: "Benutzer hinzufuegen",
+          delete: "Loeschen",
+        },
+        messages: {
+          loadError: "Benutzer konnten nicht geladen werden.",
+          noRights: "Der aktive Benutzer hat eingeschraenkte Rechte und kann keine Benutzer verwalten.",
+          invalidName: "Benutzername muss 3-32 Zeichen haben und darf nur Buchstaben, Zahlen, Punkt, Unterstrich oder Minus enthalten.",
+          created: "Benutzer hinzugefuegt.",
+          createError: "Benutzer konnte nicht hinzugefuegt werden.",
+          confirmDelete: "Benutzer loeschen",
+          deleted: "Benutzer geloescht.",
+          deleteError: "Benutzer konnte nicht geloescht werden.",
+        },
       },
     },
     notFound: {
