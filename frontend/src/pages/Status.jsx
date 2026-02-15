@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { getWifiSignal } from "../api/sensor";
+import { useLanguage } from "../i18n/useLanguage";
 
-function getWifiQuality(percent) {
-  if (percent >= 80) return "Foarte bun";
-  if (percent >= 60) return "Bun";
-  if (percent >= 40) return "Mediu";
-  if (percent >= 20) return "Slab";
-  return "Critic";
+function getWifiQualityKey(percent) {
+  if (percent >= 80) return "status.wifiQuality.excellent";
+  if (percent >= 60) return "status.wifiQuality.good";
+  if (percent >= 40) return "status.wifiQuality.medium";
+  if (percent >= 20) return "status.wifiQuality.low";
+  return "status.wifiQuality.critical";
 }
 
 export default function Status() {
+  const { locale, t } = useLanguage();
   const [wifi, setWifi] = useState(0);
   const [lastUpdate, setLastUpdate] = useState(null);
 
@@ -36,26 +38,26 @@ export default function Status() {
 
   return (
     <section className="page">
-      <h2 className="page-title">Status Sistem</h2>
+      <h2 className="page-title">{t("status.title")}</h2>
       <div className="info-grid">
         <article className="info-card">
-          <p className="info-label">Semnal Wi-Fi</p>
+          <p className="info-label">{t("status.wifiSignal")}</p>
           <p className="info-value">{wifi}%</p>
-          <p className="info-note">{getWifiQuality(wifi)}</p>
+          <p className="info-note">{t(getWifiQualityKey(wifi))}</p>
         </article>
 
         <article className="info-card">
-          <p className="info-label">Ultima actualizare</p>
+          <p className="info-label">{t("status.lastUpdate")}</p>
           <p className="info-value">
             {lastUpdate
-              ? lastUpdate.toLocaleTimeString("ro-RO", {
+              ? lastUpdate.toLocaleTimeString(locale, {
                   hour: "2-digit",
                   minute: "2-digit",
                   second: "2-digit",
                 })
               : "--:--:--"}
           </p>
-          <p className="info-note">Refresh automat la 5 secunde</p>
+          <p className="info-note">{t("status.refreshNote")}</p>
         </article>
       </div>
     </section>

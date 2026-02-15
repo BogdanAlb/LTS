@@ -1,14 +1,18 @@
+import { useLanguage } from "../i18n/useLanguage";
+
 export default function ControlPanel({ onTare, onStart, onStop }) {
+  const { t } = useLanguage();
+
   return (
     <div className="button-row">
       <button type="button" onClick={onTare} className="tare">
-        Tare
+        {t("dashboard.actions.tare")}
       </button>
       <button type="button" onClick={onStart} className="start">
-        Start
+        {t("dashboard.actions.start")}
       </button>
       <button type="button" onClick={onStop} className="stop">
-        Stop
+        {t("dashboard.actions.stop")}
       </button>
     </div>
   );

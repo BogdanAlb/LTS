@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getWifiSignal } from "../api/sensor";
+import { useLanguage } from "../i18n/useLanguage";
 
 export default function StatusBar() {
+  const { locale } = useLanguage();
   const [time, setTime] = useState(new Date());
   const [wifi, setWifi] = useState(0);
 
@@ -22,12 +24,12 @@ export default function StatusBar() {
     return () => clearInterval(interval);
   }, []);
 
-  const formattedTime = time.toLocaleTimeString("ro-RO", {
+  const formattedTime = time.toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
   });
-  const formattedDate = time.toLocaleDateString("ro-RO", {
+  const formattedDate = time.toLocaleDateString(locale, {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",

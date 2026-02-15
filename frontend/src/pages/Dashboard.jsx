@@ -2,11 +2,13 @@ import { useCallback, useEffect, useState } from "react";
 import { getCurrentWeight, tareScale } from "../api/sensor";
 import ControlPanel from "../components/ControlPanel";
 import GaugeDisplay from "../components/GaugeDisplay";
+import { useLanguage } from "../i18n/useLanguage";
 
 export default function Dashboard() {
+  const { t } = useLanguage();
   const [weight, setWeight] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
-  const [message, setMessage] = useState("");
+  const [messageKey, setMessageKey] = useState("");
 
   const fetchWeight = useCallback(async () => {
     const value = await getCurrentWeight();
@@ -31,20 +33,20 @@ export default function Dashboard() {
   }, [fetchWeight, isRunning]);
 
   useEffect(() => {
-    if (!message) {
+    if (!messageKey) {
       return undefined;
     }
 
-    const timeoutId = setTimeout(() => setMessage(""), 2500);
+    const timeoutId = setTimeout(() => setMessageKey(""), 2500);
     return () => clearTimeout(timeoutId);
-  }, [message]);
+  }, [messageKey]);
 
   const handleStart = () => {
     if (isRunning) {
       return;
     }
     setIsRunning(true);
-    setMessage("Live reading started");
+    setMessageKey("dashboard.messages.started");
   };
 
   const handleStop = () => {
@@ -52,17 +54,17 @@ export default function Dashboard() {
       return;
     }
     setIsRunning(false);
-    setMessage("Reading stopped");
+    setMessageKey("dashboard.messages.stopped");
   };
 
   const handleTare = async () => {
     const ok = await tareScale();
     if (ok) {
       setWeight(0);
-      setMessage("Tare done");
+      setMessageKey("dashboard.messages.tareDone");
       return;
     }
-    setMessage("Tare failed");
+    setMessageKey("dashboard.messages.tareFailed");
   };
 
   return (
@@ -74,7 +76,7 @@ export default function Dashboard() {
           onStart={handleStart}
           onStop={handleStop}
         />
-        {message && <div className="status-message">{message}</div>}
+        {messageKey && <div className="status-message">{t(messageKey)}</div>}
       </div>
     </section>
   );

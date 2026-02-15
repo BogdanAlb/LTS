@@ -2,3 +2,5 @@
 [2026-02-15 10:08:37] timeout waiting for http://localhost:5173; launching chromium anyway
 [2026-02-15 10:08:43] timeout waiting for http://localhost:5173; launching chromium anyway
 [2026-02-15 10:10:32] timeout waiting for http://localhost:5173; launching chromium anyway
+[2026-02-15 14:20:59] starting backend+frontend via start-lts.sh
+[2026-02-15 14:21:06] chromium already running; exiting

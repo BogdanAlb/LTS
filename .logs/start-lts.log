@@ -3,3 +3,8 @@
 ✅ Frontend UP — log: /home/bogdan/LTS/.logs/frontend.log
 ⚠️  Un serviciu nu rulează. Verifică log-urile.
 ℹ️  Apasă Ctrl+C aici ca să oprești ambele procese.
+⏳ Pornesc serviciile...
+✅ Backend UP — log: /home/bogdan/LTS/.logs/backend.log
+✅ Frontend UP — log: /home/bogdan/LTS/.logs/frontend.log
+⚠️  Un serviciu nu rulează. Verifică log-urile.
+ℹ️  Apasă Ctrl+C aici ca să oprești ambele procese.

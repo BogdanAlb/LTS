@@ -1,15 +1,18 @@
 import { NavLink, Outlet } from "react-router-dom";
 import topLogo from "../assets/lts-logo.png";
 import StatusBar from "../components/StatusBar";
-
-const navItems = [
-  { to: "/", label: "Principal" },
-  { to: "/dashboard", label: "Dashboard" },
-  { to: "/status", label: "Status" },
-  { to: "/settings", label: "Setari" },
-];
+import { useLanguage } from "../i18n/useLanguage";
 
 export default function MainLayout() {
+  const { t } = useLanguage();
+
+  const navItems = [
+    { to: "/", label: t("layout.nav.home") },
+    { to: "/dashboard", label: t("layout.nav.dashboard") },
+    { to: "/status", label: t("layout.nav.status") },
+    { to: "/settings", label: t("layout.nav.settings") },
+  ];
+
   return (
     <div className="app-shell">
       <StatusBar />
@@ -18,12 +21,12 @@ export default function MainLayout() {
         <div className="brand-block">
           <img src={topLogo} alt="LTS Logo" className="brand-logo" />
           <div>
-            <p className="brand-title">LTS Weight Monitor</p>
-            <p className="brand-subtitle">Structura clara pe pagina principala si ramuri</p>
+            <p className="brand-title">{t("appName")}</p>
+            <p className="brand-subtitle">{t("layout.subtitle")}</p>
           </div>
         </div>
 
-        <nav className="main-nav" aria-label="Main navigation">
+        <nav className="main-nav" aria-label={t("layout.navigationAria")}>
           {navItems.map((item) => (
             <NavLink
               key={item.to}
