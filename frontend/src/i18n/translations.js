@@ -24,8 +24,6 @@ export const translations = {
       login: {
         title: "Log In",
         loadingUsers: "Se incarca utilizatorii...",
-        selectedUser: "Utilizator selectat",
-        enterPin: "Introduceti parola",
         pinAria: "PIN introdus",
         keypadAria: "Tastatura numerica",
         actions: {
@@ -179,8 +177,6 @@ export const translations = {
       login: {
         title: "Log In",
         loadingUsers: "Loading users...",
-        selectedUser: "Selected user",
-        enterPin: "Enter password",
         pinAria: "Entered PIN",
         keypadAria: "Numeric keypad",
         actions: {
@@ -333,8 +329,6 @@ export const translations = {
         title: "Log In",
         subtitle: "Benutzer waehlen und das 4-stellige numerische Passwort eingeben.",
         loadingUsers: "Benutzer werden geladen...",
-        selectedUser: "Ausgewaehlter Benutzer",
-        enterPin: "Passwort eingeben",
         pinAria: "Eingegebene PIN",
         keypadAria: "Numerische Tastatur",
         actions: {

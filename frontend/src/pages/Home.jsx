@@ -163,12 +163,11 @@ export default function Home() {
     return (
       <section className="page login-page">
         <h2 className="page-title">{t("home.login.title")}</h2>
-        <p className="page-subtitle">{t("home.login.subtitle")}</p>
 
         {usersLoading ? <p className="info-note">{t("home.login.loadingUsers")}</p> : null}
 
         {!usersLoading && users.length > 0 ? (
-          <>
+          <div className="login-auth-layout">
             <div className="login-user-grid">
               {users.map((user) => (
                 <button
@@ -184,13 +183,6 @@ export default function Home() {
             </div>
 
             <div className="pin-panel">
-              <p className="info-note">
-                {selectedUser
-                  ? `${t("home.login.selectedUser")}: ${selectedUser.username}`
-                  : t("home.login.messages.chooseUser")}
-              </p>
-              <p className="pin-title">{t("home.login.enterPin")}</p>
-
               <div className="pin-dots" aria-label={t("home.login.pinAria")}>
                 {PIN_DOTS.map((index) => (
                   <span
@@ -230,7 +222,7 @@ export default function Home() {
                 })}
               </div>
             </div>
-          </>
+          </div>
         ) : null}
 
         {!usersLoading && users.length === 0 ? (

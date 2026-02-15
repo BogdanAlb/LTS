@@ -8,41 +8,44 @@ export default function MainLayout() {
   const { t } = useLanguage();
   const { isAuthenticated, logout, user } = useSession();
 
-  const navItems = isAuthenticated
-    ? [
-        { to: "/", label: t("layout.nav.home") },
-        { to: "/dashboard", label: t("layout.nav.dashboard") },
-        { to: "/grafic", label: t("layout.nav.graph") },
-        { to: "/status", label: t("layout.nav.status") },
-        { to: "/settings", label: t("layout.nav.settings") },
-      ]
-    : [{ to: "/", label: t("layout.nav.home") }];
+  const navItems = [
+    { to: "/", label: t("layout.nav.home") },
+    { to: "/dashboard", label: t("layout.nav.dashboard") },
+    { to: "/grafic", label: t("layout.nav.graph") },
+    { to: "/status", label: t("layout.nav.status") },
+    { to: "/settings", label: t("layout.nav.settings") },
+  ];
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${isAuthenticated ? "" : " login-shell"}`}>
       <StatusBar />
 
-      <header className="main-header">
-        <div className="brand-block">
-          <img src={topLogo} alt="LTS Logo" className="brand-logo" />
+      <header className={`main-header${isAuthenticated ? "" : " login-header"}`}>
+        <div className={`brand-block${isAuthenticated ? "" : " login-brand-block"}`}>
+          <img
+            src={topLogo}
+            alt="LTS Logo"
+            className={`brand-logo${isAuthenticated ? "" : " login-brand-logo"}`}
+          />
           <div>
-            <p className="brand-title">{t("appName")}</p>
-            <p className="brand-subtitle">{t("layout.subtitle")}</p>
+            <p className={`brand-title${isAuthenticated ? "" : " login-brand-title"}`}>{t("appName")}</p>
           </div>
         </div>
 
-        <nav className="main-nav" aria-label={t("layout.navigationAria")}>
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}
-              end={item.to === "/"}
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
+        {isAuthenticated ? (
+          <nav className="main-nav" aria-label={t("layout.navigationAria")}>
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}
+                end={item.to === "/"}
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+        ) : null}
 
         {isAuthenticated && user ? (
           <div className="session-panel">
@@ -56,7 +59,7 @@ export default function MainLayout() {
         ) : null}
       </header>
 
-      <main className="main-content">
+      <main className={`main-content${isAuthenticated ? "" : " login-main-content"}`}>
         <Outlet />
       </main>
     </div>
