@@ -8,7 +8,10 @@ export const translations = {
   ro: {
     appName: "Preload System",
     layout: {
+      subtitle: "Structura clara cu ecran de autentificare si sectiuni dedicate",
       navigationAria: "Navigare principala",
+      loggedInAs: "Utilizator conectat",
+      logout: "Log Out",
       nav: {
         home: "Principal",
         dashboard: "Dashboard",
@@ -20,6 +23,26 @@ export const translations = {
     home: {
       title: "Pagina Principala",
       subtitle: "Frontend-ul este organizat pe o pagina centrala si ramuri clare de navigatie.",
+      login: {
+        title: "Log In",
+        subtitle: "Selecteaza utilizatorul si introdu parola numerica din 4 cifre.",
+        loadingUsers: "Se incarca utilizatorii...",
+        selectedUser: "Utilizator selectat",
+        enterPin: "Introduceti parola",
+        pinAria: "PIN introdus",
+        keypadAria: "Tastatura numerica",
+        actions: {
+          clear: "Clear",
+          enter: "Enter",
+        },
+        messages: {
+          loadError: "Nu am putut incarca utilizatorii.",
+          chooseUser: "Selecteaza mai intai un utilizator.",
+          pinLength: "Parola trebuie sa contina exact 4 cifre.",
+          invalidLogin: "Utilizator sau parola invalida.",
+          noUsers: "Nu exista utilizatori configurati.",
+        },
+      },
       branches: {
         dashboard: {
           title: "Dashboard",
@@ -110,13 +133,15 @@ export const translations = {
       },
       users: {
         title: "Utilizatori",
-        subtitle: "Admin are drepturi depline: poate adauga sau sterge utilizatori.",
+        subtitle: "Admin are drepturi depline: poate adauga/sterge utilizatori si seta PIN-ul lor.",
         loading: "Se incarca utilizatorii...",
         activeUser: "Utilizator activ",
         none: "Niciun utilizator disponibil",
         usernameLabel: "Nume utilizator",
         usernamePlaceholder: "ex: operator_1",
         roleLabel: "Rol",
+        pinLabel: "PIN (4 cifre)",
+        pinPlaceholder: "ex: 1234",
         actions: {
           add: "Adauga utilizator",
           delete: "Sterge",
@@ -125,6 +150,7 @@ export const translations = {
           loadError: "Nu am putut incarca utilizatorii.",
           noRights: "Utilizatorul activ are drepturi restranse si nu poate administra utilizatori.",
           invalidName: "Numele trebuie sa aiba 3-32 caractere si doar litere, cifre, punct, underscore sau minus.",
+          invalidPin: "PIN-ul trebuie sa contina exact 4 cifre.",
           created: "Utilizator adaugat.",
           createError: "Nu am putut adauga utilizatorul.",
           confirmDelete: "Stergi utilizatorul",
@@ -144,6 +170,8 @@ export const translations = {
     layout: {
       subtitle: "Clear structure with main page and dedicated branches",
       navigationAria: "Main navigation",
+      loggedInAs: "Logged in as",
+      logout: "Log Out",
       nav: {
         home: "Home",
         dashboard: "Dashboard",
@@ -155,6 +183,26 @@ export const translations = {
     home: {
       title: "Main Page",
       subtitle: "",
+      login: {
+        title: "Log In",
+        subtitle: "Select a user and enter the 4-digit numeric password.",
+        loadingUsers: "Loading users...",
+        selectedUser: "Selected user",
+        enterPin: "Enter password",
+        pinAria: "Entered PIN",
+        keypadAria: "Numeric keypad",
+        actions: {
+          clear: "Clear",
+          enter: "Enter",
+        },
+        messages: {
+          loadError: "Could not load users.",
+          chooseUser: "Select a user first.",
+          pinLength: "Password must contain exactly 4 digits.",
+          invalidLogin: "Invalid user or password.",
+          noUsers: "No users are configured.",
+        },
+      },
       branches: {
         dashboard: {
           title: "Dashboard",
@@ -245,13 +293,15 @@ export const translations = {
       },
       users: {
         title: "Users",
-        subtitle: "Admins have full rights and can add or delete users.",
+        subtitle: "Admins have full rights and can add/delete users and set their PIN.",
         loading: "Loading users...",
         activeUser: "Active user",
         none: "No user available",
         usernameLabel: "Username",
         usernamePlaceholder: "e.g. operator_1",
         roleLabel: "Role",
+        pinLabel: "PIN (4 digits)",
+        pinPlaceholder: "e.g. 1234",
         actions: {
           add: "Add user",
           delete: "Delete",
@@ -260,6 +310,7 @@ export const translations = {
           loadError: "Could not load users.",
           noRights: "The active user has restricted rights and cannot manage users.",
           invalidName: "Username must be 3-32 chars and only letters, numbers, dot, underscore or minus.",
+          invalidPin: "PIN must contain exactly 4 digits.",
           created: "User created.",
           createError: "Could not create user.",
           confirmDelete: "Delete user",
@@ -279,6 +330,8 @@ export const translations = {
     layout: {
       subtitle: "Klare Struktur mit Hauptseite und zugehorigen Bereichen",
       navigationAria: "Hauptnavigation",
+      loggedInAs: "Angemeldet als",
+      logout: "Log Out",
       nav: {
         home: "Startseite",
         dashboard: "Dashboard",
@@ -290,6 +343,26 @@ export const translations = {
     home: {
       title: "Hauptseite",
       subtitle: "Das Frontend ist mit einer zentralen Seite und klaren Navigationsbereichen aufgebaut.",
+      login: {
+        title: "Log In",
+        subtitle: "Benutzer waehlen und das 4-stellige numerische Passwort eingeben.",
+        loadingUsers: "Benutzer werden geladen...",
+        selectedUser: "Ausgewaehlter Benutzer",
+        enterPin: "Passwort eingeben",
+        pinAria: "Eingegebene PIN",
+        keypadAria: "Numerische Tastatur",
+        actions: {
+          clear: "Clear",
+          enter: "Enter",
+        },
+        messages: {
+          loadError: "Benutzer konnten nicht geladen werden.",
+          chooseUser: "Waehle zuerst einen Benutzer.",
+          pinLength: "Das Passwort muss genau 4 Ziffern haben.",
+          invalidLogin: "Benutzer oder Passwort ungueltig.",
+          noUsers: "Es sind keine Benutzer konfiguriert.",
+        },
+      },
       branches: {
         dashboard: {
           title: "Dashboard",
@@ -380,13 +453,15 @@ export const translations = {
       },
       users: {
         title: "Benutzer",
-        subtitle: "Admins haben volle Rechte und koennen Benutzer hinzufuegen oder loeschen.",
+        subtitle: "Admins haben volle Rechte und koennen Benutzer samt PIN verwalten.",
         loading: "Benutzer werden geladen...",
         activeUser: "Aktiver Benutzer",
         none: "Kein Benutzer verfuegbar",
         usernameLabel: "Benutzername",
         usernamePlaceholder: "z. B. operator_1",
         roleLabel: "Rolle",
+        pinLabel: "PIN (4 Ziffern)",
+        pinPlaceholder: "z. B. 1234",
         actions: {
           add: "Benutzer hinzufuegen",
           delete: "Loeschen",
@@ -395,6 +470,7 @@ export const translations = {
           loadError: "Benutzer konnten nicht geladen werden.",
           noRights: "Der aktive Benutzer hat eingeschraenkte Rechte und kann keine Benutzer verwalten.",
           invalidName: "Benutzername muss 3-32 Zeichen haben und darf nur Buchstaben, Zahlen, Punkt, Unterstrich oder Minus enthalten.",
+          invalidPin: "PIN muss genau 4 Ziffern enthalten.",
           created: "Benutzer hinzugefuegt.",
           createError: "Benutzer konnte nicht hinzugefuegt werden.",
           confirmDelete: "Benutzer loeschen",

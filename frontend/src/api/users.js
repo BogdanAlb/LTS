@@ -23,16 +23,41 @@ export async function getUsers() {
   }
 }
 
-export async function addUser({ username, role, actorId }) {
+export async function addUser({ username, role, pin, actorId }) {
   try {
     const response = await axios.post(
       `${API_BASE}/users`,
-      { username, role },
+      { username, role, pin },
       withActor(actorId),
     );
     return response.data;
   } catch (error) {
     throw new Error(extractErrorMessage(error, "Failed to create user."));
+  }
+}
+
+export async function loginUser({ userId, pin }) {
+  try {
+    const response = await axios.post(`${API_BASE}/users/login`, {
+      user_id: userId,
+      pin,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error, "Login failed."));
+  }
+}
+
+export async function updateUserSettings({ userId, actorId, language, theme }) {
+  try {
+    const response = await axios.put(
+      `${API_BASE}/users/${userId}/settings`,
+      { language, theme },
+      withActor(actorId),
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error, "Failed to save user settings."));
   }
 }
 

@@ -1,22 +1,33 @@
 import sqlite3
 from pathlib import Path
 from contextlib import contextmanager
+import hashlib
 from typing import Generator, Optional
 
 # Path to DB file (backend/storage/lts.db)
 DB_PATH = Path(__file__).resolve().parent / "lts.db"
 
-USERS_SCHEMA_SQL = """
+DEFAULT_ADMIN_PIN = "0000"
+DEFAULT_PIN_HASH = hashlib.sha256(DEFAULT_ADMIN_PIN.encode("utf-8")).hexdigest()
+
+USERS_SCHEMA_SQL = f"""
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE COLLATE NOCASE,
     role TEXT NOT NULL CHECK (role IN ('admin', 'restricted')),
+    pin_hash TEXT NOT NULL DEFAULT '{DEFAULT_PIN_HASH}',
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+"""
 
-INSERT INTO users (username, role)
-SELECT 'admin', 'admin'
-WHERE NOT EXISTS (SELECT 1 FROM users);
+USER_SETTINGS_SCHEMA_SQL = """
+CREATE TABLE IF NOT EXISTS user_settings (
+    user_id INTEGER PRIMARY KEY,
+    language TEXT NOT NULL DEFAULT 'ro',
+    theme TEXT NOT NULL DEFAULT 'night',
+    updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 """
 
 
@@ -37,6 +48,42 @@ def _apply_pragmas(conn: sqlite3.Connection) -> None:
     cur.execute("PRAGMA wal_autocheckpoint=1000;")    # checkpoint every ~1000 pages
     cur.close()
 
+def _ensure_users_migration(conn: sqlite3.Connection) -> None:
+    columns = {
+        row[1]
+        for row in conn.execute("PRAGMA table_info(users)").fetchall()
+    }
+    if "pin_hash" not in columns:
+        conn.execute("ALTER TABLE users ADD COLUMN pin_hash TEXT")
+
+    conn.execute(
+        "UPDATE users SET pin_hash = ? WHERE pin_hash IS NULL OR trim(pin_hash) = ''",
+        (DEFAULT_PIN_HASH,),
+    )
+
+
+def _ensure_user_settings(conn: sqlite3.Connection) -> None:
+    conn.executescript(USER_SETTINGS_SCHEMA_SQL)
+    conn.execute(
+        """
+        INSERT INTO user_settings (user_id, language, theme)
+        SELECT id, 'ro', 'night'
+        FROM users
+        WHERE id NOT IN (SELECT user_id FROM user_settings)
+        """
+    )
+
+
+def _ensure_admin_user(conn: sqlite3.Connection) -> None:
+    conn.execute(
+        """
+        INSERT INTO users (username, role, pin_hash)
+        SELECT 'admin', 'admin', ?
+        WHERE NOT EXISTS (SELECT 1 FROM users)
+        """,
+        (DEFAULT_PIN_HASH,),
+    )
+
 
 def init_db(schema_sql: Optional[str] = None) -> None:
     """Ensure DB exists, enable WAL + pragmas, and optionally apply schema."""
@@ -45,6 +92,9 @@ def init_db(schema_sql: Optional[str] = None) -> None:
     try:
         _apply_pragmas(conn)
         conn.executescript(USERS_SCHEMA_SQL)
+        _ensure_users_migration(conn)
+        _ensure_admin_user(conn)
+        _ensure_user_settings(conn)
         if schema_sql:
             conn.executescript(schema_sql)
         conn.commit()
