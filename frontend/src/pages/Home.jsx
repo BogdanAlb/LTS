@@ -244,7 +244,6 @@ export default function Home() {
   return (
     <section className="page">
       <h2 className="page-title">{t("home.title")}</h2>
-      <p className="page-subtitle">{t("home.subtitle")}</p>
       {settingsSyncError ? <p className="user-message">{settingsSyncError}</p> : null}
       <div className="feature-grid">
         {branches.map((branch) => (

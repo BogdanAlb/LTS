@@ -146,10 +146,6 @@ export default function Settings() {
   return (
     <section className="page">
       <h2 className="page-title">{t("settings.title")}</h2>
-      <p className="page-subtitle">
-        {t("settings.subtitle")} <code>VITE_API_BASE_URL</code>.
-      </p>
-
       <div className="info-card">
         <p className="info-label">{t("settings.language")}</p>
         <div className="language-buttons">

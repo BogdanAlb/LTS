@@ -371,9 +371,6 @@ export default function Graph() {
 
   return (
     <section className="page graph-page">
-      <h2 className="page-title">{t("graph.title")}</h2>
-      <p className="page-subtitle">{t("graph.subtitle")}</p>
-
       <div className="graph-layout">
         <div className="graph-card">
           <p className="graph-card-title">{t("graph.chartTitle")}</p>
