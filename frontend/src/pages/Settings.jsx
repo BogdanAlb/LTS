@@ -26,16 +26,26 @@ export default function Settings() {
   const [userFeedback, setUserFeedback] = useState("");
 
   const actorId = sessionUser?.id ?? null;
+  const isRestrictedSessionUser = sessionUser?.role === "restricted";
   const activeUser = useMemo(
     () => users.find((user) => user.id === actorId) ?? sessionUser ?? null,
     [actorId, sessionUser, users],
   );
   const canManageUsers = activeUser?.role === "admin";
+  const isRestrictedUser = activeUser?.role === "restricted" || isRestrictedSessionUser;
 
   useEffect(() => {
     let mounted = true;
 
     const loadUsers = async () => {
+      if (isRestrictedSessionUser) {
+        if (mounted) {
+          setUsers([]);
+          setUsersLoading(false);
+        }
+        return;
+      }
+
       if (!actorId) {
         if (mounted) {
           setUsers([]);
@@ -66,7 +76,7 @@ export default function Settings() {
     return () => {
       mounted = false;
     };
-  }, [actorId, t]);
+  }, [actorId, isRestrictedSessionUser, t]);
 
   const handleAddUser = async (event) => {
     event.preventDefault();
@@ -178,99 +188,103 @@ export default function Settings() {
         </p>
       </div>
 
-      <div className="info-card">
-        <p className="info-label">{t("settings.users.title")}</p>
-        <p className="info-note">{t("settings.users.subtitle")}</p>
+      {!isRestrictedUser ? (
+        <>
+          <div className="info-card">
+            <p className="info-label">{t("settings.users.title")}</p>
+            <p className="info-note">{t("settings.users.subtitle")}</p>
 
-        {activeUser ? (
-          <p className="info-note">
-            {t("settings.users.activeUser")}:{" "}
-            {`${activeUser.username} (${t(`settings.userRoles.${activeUser.role}`)})`}
-          </p>
-        ) : null}
-
-        {usersLoading ? (
-          <p className="info-note">{t("settings.users.loading")}</p>
-        ) : (
-          <>
-            {!canManageUsers && activeUser ? (
-              <p className="user-permission-note">{t("settings.users.messages.noRights")}</p>
+            {activeUser ? (
+              <p className="info-note">
+                {t("settings.users.activeUser")}:{" "}
+                {`${activeUser.username} (${t(`settings.userRoles.${activeUser.role}`)})`}
+              </p>
             ) : null}
 
-            {canManageUsers ? (
-              <form className="user-form" onSubmit={handleAddUser}>
-                <input
-                  type="text"
-                  className="user-input"
-                  value={newUsername}
-                  onChange={(event) => setNewUsername(event.target.value)}
-                  placeholder={t("settings.users.usernamePlaceholder")}
-                  aria-label={t("settings.users.usernameLabel")}
-                />
-                <select
-                  className="user-select"
-                  value={newRole}
-                  onChange={(event) => setNewRole(event.target.value)}
-                  aria-label={t("settings.users.roleLabel")}
-                >
-                  <option value="restricted">{t("settings.userRoles.restricted")}</option>
-                  <option value="admin">{t("settings.userRoles.admin")}</option>
-                </select>
-                <input
-                  type="password"
-                  inputMode="numeric"
-                  maxLength={4}
-                  className="user-input user-pin-input"
-                  value={newPin}
-                  onChange={(event) => setNewPin(event.target.value.replace(/\D/g, "").slice(0, 4))}
-                  placeholder={t("settings.users.pinPlaceholder")}
-                  aria-label={t("settings.users.pinLabel")}
-                />
-                <button type="submit" className="user-action-button">
-                  {t("settings.users.actions.add")}
-                </button>
-              </form>
-            ) : null}
+            {usersLoading ? (
+              <p className="info-note">{t("settings.users.loading")}</p>
+            ) : (
+              <>
+                {!canManageUsers && activeUser ? (
+                  <p className="user-permission-note">{t("settings.users.messages.noRights")}</p>
+                ) : null}
 
-            <ul className="user-list">
-              {users.map((user) => (
-                <li key={user.id} className="user-row">
-                  <div className="user-main">
-                    <span className="user-name">{user.username}</span>
-                    <span className={`role-badge ${user.role}`}>
-                      {t(`settings.userRoles.${user.role}`)}
-                    </span>
-                  </div>
-                  {canManageUsers ? (
-                    <button
-                      type="button"
-                      className="user-delete"
-                      onClick={() => handleDeleteUser(user)}
-                      disabled={user.id === actorId}
+                {canManageUsers ? (
+                  <form className="user-form" onSubmit={handleAddUser}>
+                    <input
+                      type="text"
+                      className="user-input"
+                      value={newUsername}
+                      onChange={(event) => setNewUsername(event.target.value)}
+                      placeholder={t("settings.users.usernamePlaceholder")}
+                      aria-label={t("settings.users.usernameLabel")}
+                    />
+                    <select
+                      className="user-select"
+                      value={newRole}
+                      onChange={(event) => setNewRole(event.target.value)}
+                      aria-label={t("settings.users.roleLabel")}
                     >
-                      {t("settings.users.actions.delete")}
+                      <option value="restricted">{t("settings.userRoles.restricted")}</option>
+                      <option value="admin">{t("settings.userRoles.admin")}</option>
+                    </select>
+                    <input
+                      type="password"
+                      inputMode="numeric"
+                      maxLength={4}
+                      className="user-input user-pin-input"
+                      value={newPin}
+                      onChange={(event) => setNewPin(event.target.value.replace(/\D/g, "").slice(0, 4))}
+                      placeholder={t("settings.users.pinPlaceholder")}
+                      aria-label={t("settings.users.pinLabel")}
+                    />
+                    <button type="submit" className="user-action-button">
+                      {t("settings.users.actions.add")}
                     </button>
-                  ) : null}
+                  </form>
+                ) : null}
+
+                <ul className="user-list">
+                  {users.map((user) => (
+                    <li key={user.id} className="user-row">
+                      <div className="user-main">
+                        <span className="user-name">{user.username}</span>
+                        <span className={`role-badge ${user.role}`}>
+                          {t(`settings.userRoles.${user.role}`)}
+                        </span>
+                      </div>
+                      {canManageUsers ? (
+                        <button
+                          type="button"
+                          className="user-delete"
+                          onClick={() => handleDeleteUser(user)}
+                          disabled={user.id === actorId}
+                        >
+                          {t("settings.users.actions.delete")}
+                        </button>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {settingsSyncError ? <p className="user-message">{settingsSyncError}</p> : null}
+            {userFeedback ? <p className="user-message">{userFeedback}</p> : null}
+          </div>
+
+          <div className="info-card">
+            <p className="info-label">{t("settings.routes")}</p>
+            <ul className="route-list">
+              {routes.map((route) => (
+                <li key={route.path}>
+                  <code>{route.path}</code> - {t(route.descriptionKey)}
                 </li>
               ))}
             </ul>
-          </>
-        )}
-
-        {settingsSyncError ? <p className="user-message">{settingsSyncError}</p> : null}
-        {userFeedback ? <p className="user-message">{userFeedback}</p> : null}
-      </div>
-
-      <div className="info-card">
-        <p className="info-label">{t("settings.routes")}</p>
-        <ul className="route-list">
-          {routes.map((route) => (
-            <li key={route.path}>
-              <code>{route.path}</code> - {t(route.descriptionKey)}
-            </li>
-          ))}
-        </ul>
-      </div>
+          </div>
+        </>
+      ) : null}
     </section>
   );
 }
