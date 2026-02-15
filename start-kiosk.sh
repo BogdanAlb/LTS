@@ -53,8 +53,7 @@ if pgrep -x chromium >/dev/null 2>&1; then
 fi
 
 if ! wait_port "127.0.0.1" "${FRONTEND_PORT}" 1; then
-  log "starting backend+frontend via start-lts.sh"
-  "${ROOT}/start-lts.sh" >> "${LOG_DIR}/start-lts.log" 2>&1 &
+  log "frontend not reachable on ${FRONTEND_PORT}; relying on systemd services"
 fi
 
 if ! wait_url "${KIOSK_URL}" 120; then

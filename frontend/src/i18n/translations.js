@@ -6,9 +6,8 @@ export const LANGUAGE_LOCALES = {
 
 export const translations = {
   ro: {
-    appName: "Preload System",
+    appName: "Preload Measuring System",
     layout: {
-      subtitle: "Structura clara cu ecran de autentificare si sectiuni dedicate",
       navigationAria: "Navigare principala",
       loggedInAs: "Utilizator conectat",
       logout: "Log Out",
@@ -22,10 +21,8 @@ export const translations = {
     },
     home: {
       title: "Pagina Principala",
-      subtitle: "Frontend-ul este organizat pe o pagina centrala si ramuri clare de navigatie.",
       login: {
         title: "Log In",
-        subtitle: "Selecteaza utilizatorul si introdu parola numerica din 4 cifre.",
         loadingUsers: "Se incarca utilizatorii...",
         selectedUser: "Utilizator selectat",
         enterPin: "Introduceti parola",
@@ -78,7 +75,6 @@ export const translations = {
     },
     graph: {
       title: "Grafic Greutate",
-      subtitle: "Vizualizare in timp real a evolutiei greutatii.",
       chartTitle: "Evolutie greutate",
       ariaLabel: "Grafic evolutie greutate live",
       empty: "Porneste citirea live pentru a construi graficul.",
@@ -94,7 +90,7 @@ export const translations = {
       title: "Status Sistem",
       wifiSignal: "Semnal Wi-Fi",
       lastUpdate: "Ultima actualizare",
-      refreshNote: "Refresh automat la 5 secunde",
+      refreshNote: "",
       wifiQuality: {
         excellent: "Foarte bun",
         good: "Bun",
@@ -105,7 +101,6 @@ export const translations = {
     },
     settings: {
       title: "Setari si Structura",
-      subtitle: "Pentru backend configurabil, poti seta variabila de mediu",
       language: "Alegere limba",
       selectedLanguage: "Limba selectata",
       appearance: "Aspect",
@@ -133,7 +128,6 @@ export const translations = {
       },
       users: {
         title: "Utilizatori",
-        subtitle: "Admin are drepturi depline: poate adauga/sterge utilizatori si seta PIN-ul lor.",
         loading: "Se incarca utilizatorii...",
         activeUser: "Utilizator activ",
         none: "Niciun utilizator disponibil",
@@ -166,9 +160,8 @@ export const translations = {
     },
   },
   en: {
-    appName: "Preload System",
+    appName: "Preload Measuring System",
     layout: {
-      subtitle: "Clear structure with main page and dedicated branches",
       navigationAria: "Main navigation",
       loggedInAs: "Logged in as",
       logout: "Log Out",
@@ -185,7 +178,6 @@ export const translations = {
       subtitle: "",
       login: {
         title: "Log In",
-        subtitle: "Select a user and enter the 4-digit numeric password.",
         loadingUsers: "Loading users...",
         selectedUser: "Selected user",
         enterPin: "Enter password",
@@ -238,7 +230,6 @@ export const translations = {
     },
     graph: {
       title: "Weight Graph",
-      subtitle: "Real-time visualization of weight trend.",
       chartTitle: "Weight trend",
       ariaLabel: "Live weight trend chart",
       empty: "Start live reading to build the chart.",
@@ -265,7 +256,6 @@ export const translations = {
     },
     settings: {
       title: "Settings and Structure",
-      subtitle: "For a configurable backend, set the environment variable",
       language: "Language selection",
       selectedLanguage: "Selected language",
       appearance: "Appearance",
@@ -293,7 +283,6 @@ export const translations = {
       },
       users: {
         title: "Users",
-        subtitle: "Admins have full rights and can add/delete users and set their PIN.",
         loading: "Loading users...",
         activeUser: "Active user",
         none: "No user available",
@@ -321,14 +310,12 @@ export const translations = {
     },
     notFound: {
       title: "Page not found",
-      subtitle: "The requested route does not exist in the current structure.",
       backHome: "Back to main page",
     },
   },
   de: {
-    appName: "Preload System",
+    appName: "Preload Measuring System",
     layout: {
-      subtitle: "Klare Struktur mit Hauptseite und zugehorigen Bereichen",
       navigationAria: "Hauptnavigation",
       loggedInAs: "Angemeldet als",
       logout: "Log Out",
@@ -342,7 +329,6 @@ export const translations = {
     },
     home: {
       title: "Hauptseite",
-      subtitle: "Das Frontend ist mit einer zentralen Seite und klaren Navigationsbereichen aufgebaut.",
       login: {
         title: "Log In",
         subtitle: "Benutzer waehlen und das 4-stellige numerische Passwort eingeben.",
@@ -398,7 +384,6 @@ export const translations = {
     },
     graph: {
       title: "Gewichtsgrafik",
-      subtitle: "Echtzeit-Visualisierung des Gewichtsverlaufs.",
       chartTitle: "Gewichtsverlauf",
       ariaLabel: "Live-Gewichtsverlauf als Grafik",
       empty: "Starte die Live-Messung, um die Grafik aufzubauen.",
@@ -425,7 +410,7 @@ export const translations = {
     },
     settings: {
       title: "Einstellungen und Struktur",
-      subtitle: "Fuer ein konfigurierbares Backend setze die Umgebungsvariable",
+      subtitle: "Für ein konfigurierbares Backend setze die Umgebungsvariable",
       language: "Sprachauswahl",
       selectedLanguage: "Ausgewaehlte Sprache",
       appearance: "Darstellung",
@@ -439,7 +424,7 @@ export const translations = {
         settings: "Frontend-Einstellungen und Routenstruktur",
       },
       languageNames: {
-        ro: "Rumaenisch",
+        ro: "Rumänisch",
         en: "Englisch",
         de: "Deutsch",
       },
@@ -449,7 +434,7 @@ export const translations = {
       },
       userRoles: {
         admin: "Admin",
-        restricted: "Eingeschraenkt",
+        restricted: "Eingeschränkt",
       },
       users: {
         title: "Benutzer",
@@ -464,7 +449,7 @@ export const translations = {
         pinPlaceholder: "z. B. 1234",
         actions: {
           add: "Benutzer hinzufuegen",
-          delete: "Loeschen",
+          delete: "Löschen",
         },
         messages: {
           loadError: "Benutzer konnten nicht geladen werden.",
