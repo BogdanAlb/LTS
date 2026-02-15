@@ -9,6 +9,7 @@ export default function MainLayout() {
   const navItems = [
     { to: "/", label: t("layout.nav.home") },
     { to: "/dashboard", label: t("layout.nav.dashboard") },
+    { to: "/grafic", label: t("layout.nav.graph") },
     { to: "/status", label: t("layout.nav.status") },
     { to: "/settings", label: t("layout.nav.settings") },
   ];

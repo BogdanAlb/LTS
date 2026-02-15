@@ -13,6 +13,7 @@ export const translations = {
       nav: {
         home: "Principal",
         dashboard: "Dashboard",
+        graph: "Grafic",
         status: "Status",
         settings: "Setari",
       },
@@ -24,6 +25,10 @@ export const translations = {
         dashboard: {
           title: "Dashboard",
           description: "Citire live pentru greutate, cu comenzi Start, Stop si Tare.",
+        },
+        graph: {
+          title: "Grafic",
+          description: "Grafic live pentru evolutia greutatii cu export PDF.",
         },
         status: {
           title: "Status",
@@ -49,6 +54,20 @@ export const translations = {
         tareFailed: "Tarare esuata",
       },
     },
+    graph: {
+      title: "Grafic Greutate",
+      subtitle: "Vizualizare in timp real a evolutiei greutatii.",
+      chartTitle: "Evolutie greutate",
+      ariaLabel: "Grafic evolutie greutate live",
+      empty: "Porneste citirea live pentru a construi graficul.",
+      actions: {
+        export: "Export PDF",
+      },
+      messages: {
+        exportDone: "PDF exportat",
+        exportFailed: "Export PDF esuat",
+      },
+    },
     status: {
       title: "Status Sistem",
       wifiSignal: "Semnal Wi-Fi",
@@ -71,6 +90,7 @@ export const translations = {
       routeDescriptions: {
         home: "Pagina principala",
         dashboard: "Citire live + comenzi cantar",
+        graph: "Grafic live + export PDF",
         status: "Indicatori sistem si conectivitate",
         settings: "Setari frontend si organizare rute",
       },
@@ -94,6 +114,7 @@ export const translations = {
       nav: {
         home: "Home",
         dashboard: "Dashboard",
+        graph: "Graph",
         status: "Status",
         settings: "Settings",
       },
@@ -105,6 +126,10 @@ export const translations = {
         dashboard: {
           title: "Dashboard",
           description: "Live weight reading with Start, Stop, and Tare controls.",
+        },
+        graph: {
+          title: "Graph",
+          description: "Live weight trend chart with PDF export.",
         },
         status: {
           title: "Status",
@@ -130,6 +155,20 @@ export const translations = {
         tareFailed: "Tare failed",
       },
     },
+    graph: {
+      title: "Weight Graph",
+      subtitle: "Real-time visualization of weight trend.",
+      chartTitle: "Weight trend",
+      ariaLabel: "Live weight trend chart",
+      empty: "Start live reading to build the chart.",
+      actions: {
+        export: "Export PDF",
+      },
+      messages: {
+        exportDone: "PDF exported",
+        exportFailed: "PDF export failed",
+      },
+    },
     status: {
       title: "System Status",
       wifiSignal: "Wi-Fi Signal",
@@ -152,6 +191,7 @@ export const translations = {
       routeDescriptions: {
         home: "Main page",
         dashboard: "Live readout + scale controls",
+        graph: "Live chart + PDF export",
         status: "System and connectivity indicators",
         settings: "Frontend settings and route organization",
       },
@@ -175,6 +215,7 @@ export const translations = {
       nav: {
         home: "Startseite",
         dashboard: "Dashboard",
+        graph: "Grafik",
         status: "Status",
         settings: "Einstellungen",
       },
@@ -186,6 +227,10 @@ export const translations = {
         dashboard: {
           title: "Dashboard",
           description: "Live-Gewichtsanzeige mit Start-, Stopp- und Tara-Steuerung.",
+        },
+        graph: {
+          title: "Grafik",
+          description: "Live-Trendgrafik des Gewichts mit PDF-Export.",
         },
         status: {
           title: "Status",
@@ -211,6 +256,20 @@ export const translations = {
         tareFailed: "Tara fehlgeschlagen",
       },
     },
+    graph: {
+      title: "Gewichtsgrafik",
+      subtitle: "Echtzeit-Visualisierung des Gewichtsverlaufs.",
+      chartTitle: "Gewichtsverlauf",
+      ariaLabel: "Live-Gewichtsverlauf als Grafik",
+      empty: "Starte die Live-Messung, um die Grafik aufzubauen.",
+      actions: {
+        export: "PDF exportieren",
+      },
+      messages: {
+        exportDone: "PDF exportiert",
+        exportFailed: "PDF-Export fehlgeschlagen",
+      },
+    },
     status: {
       title: "Systemstatus",
       wifiSignal: "WLAN-Signal",
@@ -233,6 +292,7 @@ export const translations = {
       routeDescriptions: {
         home: "Hauptseite",
         dashboard: "Live-Anzeige + Waagensteuerung",
+        graph: "Live-Grafik + PDF-Export",
         status: "System- und Verbindungsindikatoren",
         settings: "Frontend-Einstellungen und Routenstruktur",
       },

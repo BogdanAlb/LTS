@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import MainLayout from "./layouts/MainLayout";
 import Dashboard from "./pages/Dashboard";
+import Graph from "./pages/Graph";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
@@ -13,6 +14,7 @@ export default function App() {
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/grafic" element={<Graph />} />
         <Route path="/status" element={<Status />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="*" element={<NotFound />} />

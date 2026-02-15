@@ -1,6 +1,6 @@
 import { useLanguage } from "../i18n/useLanguage";
 
-export default function ControlPanel({ onTare, onStart, onStop }) {
+export default function ControlPanel({ onTare, onStart, onStop, onExport }) {
   const { t } = useLanguage();
 
   return (
@@ -14,6 +14,11 @@ export default function ControlPanel({ onTare, onStart, onStop }) {
       <button type="button" onClick={onStop} className="stop">
         {t("dashboard.actions.stop")}
       </button>
+      {typeof onExport === "function" && (
+        <button type="button" onClick={onExport} className="export">
+          {t("graph.actions.export")}
+        </button>
+      )}
     </div>
   );
 }

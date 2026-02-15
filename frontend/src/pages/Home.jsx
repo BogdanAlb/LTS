@@ -11,6 +11,11 @@ export default function Home() {
       to: "/dashboard",
     },
     {
+      title: t("home.branches.graph.title"),
+      description: t("home.branches.graph.description"),
+      to: "/grafic",
+    },
+    {
       title: t("home.branches.status.title"),
       description: t("home.branches.status.description"),
       to: "/status",
