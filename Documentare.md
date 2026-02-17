@@ -217,13 +217,15 @@ Textul UI este centralizat in `frontend/src/i18n/translations.js`.
 
 ### 5.5 Config API frontend
 
-In `frontend/src/api/users.js` si `frontend/src/api/sensor.js`:
+In `frontend/src/api/baseUrl.js`:
 
-- `API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://192.168.0.183:8000"`
+- `API_BASE` foloseste, in ordine:
+  - `VITE_API_BASE_URL` (daca este setat);
+  - altfel `http(s)://<host-ul curent din browser>:8000`.
 
 Asta inseamna:
 
-- daca nu setezi `VITE_API_BASE_URL`, frontend-ul cade pe IP-ul hardcodat.
+- dupa schimbarea retelei Wi-Fi, frontend-ul continua sa atinga backend-ul de pe noul IP al dispozitivului, fara hardcodare.
 
 ## 6. Configurare si rulare
 
@@ -257,6 +259,11 @@ Servicii active:
 - `lts-kiosk.service` (user service):
   - ruleaza `start-kiosk.sh`
   - porneste Chromium in fullscreen kiosk la `http://localhost:5173`
+
+Atentie mod de rulare:
+
+- foloseste fie modul manual (uvicorn + `npm run dev`), fie modul systemd;
+- daca le rulezi simultan apar erori `address already in use` pe porturile `8000/5173`.
 
 Restart rapid stack:
 
@@ -309,7 +316,7 @@ Din commit-uri si structura actuala, evolutia a fost incrementala, pe pasi pract
 ## 8. Limitari curente (cunoscute)
 
 - CORS este complet deschis (`*`), bun pentru test, mai putin strict pentru productie.
-- `VITE_API_BASE_URL` are fallback pe IP hardcodat.
+- Daca nu reconstruiesti frontend-ul (`npm run build`), `dist` poate ramane cu configuratia API veche.
 - Modul `measurements` exista dar nu este integrat in frontend-ul curent.
 - Sunt 2 locatii DB in cod (`backend/storage/lts.db` si `backend/lts.db` in measurements).
 - Nu exista in repo un fisier standard de dependente backend (`requirements.txt`/`pyproject.toml`), desi mediul virtual local este functional.

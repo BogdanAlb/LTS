@@ -9,6 +9,18 @@ KIOSK_URL="${KIOSK_URL:-http://localhost:5173}"
 BACKEND_PORT="${BACKEND_PORT:-8000}"
 FRONTEND_PORT="${FRONTEND_PORT:-5173}"
 
+build_kiosk_launch_url() {
+  local base_url="$1"
+  local stamp
+  stamp="$(date +%s)"
+
+  if [[ "${base_url}" == *"?"* ]]; then
+    printf '%s&v=%s\n' "${base_url}" "${stamp}"
+  else
+    printf '%s?v=%s\n' "${base_url}" "${stamp}"
+  fi
+}
+
 log() {
   printf '[%s] %s\n' "$(date +'%F %T')" "$*" >> "${LOG_DIR}/kiosk.log"
 }
@@ -60,6 +72,8 @@ if ! wait_url "${KIOSK_URL}" 120; then
   log "timeout waiting for ${KIOSK_URL}; launching chromium anyway"
 fi
 
+KIOSK_LAUNCH_URL="$(build_kiosk_launch_url "${KIOSK_URL}")"
+
 exec /usr/bin/chromium \
   --kiosk \
   --incognito \
@@ -70,4 +84,4 @@ exec /usr/bin/chromium \
   --check-for-update-interval=31536000 \
   --enable-features=UseOzonePlatform \
   --ozone-platform=wayland \
-  "${KIOSK_URL}"
+  "${KIOSK_LAUNCH_URL}"

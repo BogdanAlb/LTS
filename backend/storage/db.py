@@ -105,11 +105,15 @@ def init_db(schema_sql: Optional[str] = None) -> None:
 def connect() -> sqlite3.Connection:
     """Create a fresh connection with desired settings.
 
-    Thread-safety: create a new connection per request/task; do not share
-    connections across threads. The default check_same_thread=True enforces
-    same-thread usage which is safest for typical FastAPI sync endpoints.
+    FastAPI can execute sync dependencies/endpoints in different worker
+    threads for the same request, so disable same-thread checks for request
+    scoped connections.
     """
-    conn = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
+    conn = sqlite3.connect(
+        DB_PATH,
+        detect_types=sqlite3.PARSE_DECLTYPES,
+        check_same_thread=False,
+    )
     conn.row_factory = sqlite3.Row
     _apply_pragmas(conn)
     return conn

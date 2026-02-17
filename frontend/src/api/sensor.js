@@ -1,7 +1,5 @@
 import axios from "axios";
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://192.168.0.183:8000";
-
+import API_BASE from "./baseUrl";
 
 // Funcție pentru a obține greutatea curentă de la senzorul HX711
 export async function getCurrentWeight() {
