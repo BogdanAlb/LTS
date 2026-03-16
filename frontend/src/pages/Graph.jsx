@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { getKioskOrders } from "../api/kioskOrders";
 import { getCurrentWeight, tareScale } from "../api/sensor";
 import ControlPanel from "../components/ControlPanel";
 import GaugeDisplay from "../components/GaugeDisplay";
 import { useLanguage } from "../i18n/useLanguage";
+import { buildRepairFormPdf, createRepairFormPdfFileName } from "../repairForms/pdf";
+import { listRepairForms, REPAIR_FORMS_UPDATED_EVENT } from "../repairForms/store";
 
 const POLL_INTERVAL_MS = 500;
 const MAX_SAMPLES = 120;
@@ -15,10 +16,6 @@ const CHART_PADDING = {
   bottom: 42,
   left: 62,
 };
-const PDF_WIDTH = 842;
-const PDF_HEIGHT = 595;
-const PDF_MARGIN = 26;
-
 function base64ToBytes(base64) {
   const binary = window.atob(base64);
   const bytes = new Uint8Array(binary.length);
@@ -100,70 +97,6 @@ function svgToJpegBytes(svgElement, width, height) {
   });
 }
 
-function buildPdf(imageBytes, imageWidth, imageHeight) {
-  const encoder = new TextEncoder();
-  const chunks = [];
-  const offsets = [0];
-  let offset = 0;
-
-  const pushBytes = (bytes) => {
-    chunks.push(bytes);
-    offset += bytes.length;
-  };
-
-  const pushText = (text) => {
-    pushBytes(encoder.encode(text));
-  };
-
-  const writeObject = (id, body) => {
-    offsets[id] = offset;
-    pushText(`${id} 0 obj\n${body}\nendobj\n`);
-  };
-
-  const writeStreamObject = (id, dictionary, streamBytes) => {
-    offsets[id] = offset;
-    pushText(`${id} 0 obj\n${dictionary}\nstream\n`);
-    pushBytes(streamBytes);
-    pushText("\nendstream\nendobj\n");
-  };
-
-  pushText("%PDF-1.4\n%LTS\n");
-
-  const usableWidth = PDF_WIDTH - PDF_MARGIN * 2;
-  const usableHeight = PDF_HEIGHT - PDF_MARGIN * 2;
-  const scale = Math.min(usableWidth / imageWidth, usableHeight / imageHeight);
-  const drawWidth = imageWidth * scale;
-  const drawHeight = imageHeight * scale;
-  const drawX = (PDF_WIDTH - drawWidth) / 2;
-  const drawY = (PDF_HEIGHT - drawHeight) / 2;
-  const contentStream = encoder.encode(
-    `q\n${drawWidth.toFixed(2)} 0 0 ${drawHeight.toFixed(2)} ${drawX.toFixed(2)} ${drawY.toFixed(2)} cm\n/Im0 Do\nQ`,
-  );
-
-  writeObject(1, "<< /Type /Catalog /Pages 2 0 R >>");
-  writeObject(2, "<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
-  writeObject(
-    3,
-    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PDF_WIDTH} ${PDF_HEIGHT}] /Resources << /XObject << /Im0 5 0 R >> >> /Contents 4 0 R >>`,
-  );
-  writeStreamObject(4, `<< /Length ${contentStream.length} >>`, contentStream);
-  writeStreamObject(
-    5,
-    `<< /Type /XObject /Subtype /Image /Width ${imageWidth} /Height ${imageHeight} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imageBytes.length} >>`,
-    imageBytes,
-  );
-
-  const xrefStart = offset;
-  pushText("xref\n0 6\n");
-  pushText("0000000000 65535 f \n");
-  for (let id = 1; id <= 5; id += 1) {
-    pushText(`${String(offsets[id]).padStart(10, "0")} 00000 n \n`);
-  }
-  pushText(`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefStart}\n%%EOF`);
-
-  return new Blob(chunks, { type: "application/pdf" });
-}
-
 function downloadBlob(blob, fileName) {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
@@ -175,40 +108,15 @@ function downloadBlob(blob, fileName) {
   URL.revokeObjectURL(url);
 }
 
-function createTimestampedFileName() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const hour = String(now.getHours()).padStart(2, "0");
-  const minute = String(now.getMinutes()).padStart(2, "0");
-  const second = String(now.getSeconds()).padStart(2, "0");
-
-  return `grafic-greutate-${year}${month}${day}-${hour}${minute}${second}.pdf`;
-}
-
-function formatGraphFormLabel(item) {
-  const kunde = String(item?.fields?.kunde ?? "").trim() || String(item?.title ?? "").trim() || "Formular";
-  const befundNr = String(item?.fields?.befundNr ?? "").trim();
-  const suffix = typeof item?.id === "number" ? ` - ${item.id}` : "";
-
-  if (!befundNr) {
-    return `${kunde}${suffix}`.trim();
-  }
-
-  return `${kunde} Befund ${befundNr}${suffix}`;
-}
-
 export default function Graph() {
   const { locale, t } = useLanguage();
   const chartRef = useRef(null);
   const [weight, setWeight] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
-  const [messageKey, setMessageKey] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
   const [samples, setSamples] = useState([]);
   const [repairForms, setRepairForms] = useState([]);
   const [selectedRepairFormId, setSelectedRepairFormId] = useState("");
-  const [formsLoading, setFormsLoading] = useState(true);
   const [formsError, setFormsError] = useState("");
 
   const appendSample = useCallback((value) => {
@@ -248,61 +156,48 @@ export default function Graph() {
   }, [fetchWeight, isRunning]);
 
   useEffect(() => {
-    if (!messageKey) {
+    if (!statusMessage) {
       return undefined;
     }
 
-    const timeoutId = setTimeout(() => setMessageKey(""), 2500);
+    const timeoutId = setTimeout(() => setStatusMessage(""), 2500);
     return () => clearTimeout(timeoutId);
-  }, [messageKey]);
+  }, [statusMessage]);
+
+  const loadSavedForms = useCallback(() => {
+    try {
+      const nextForms = listRepairForms();
+      setRepairForms(nextForms);
+      setSelectedRepairFormId((current) => {
+        if (nextForms.some((item) => item.id === current)) {
+          return current;
+        }
+        return nextForms[0]?.id ?? "";
+      });
+      setFormsError("");
+    } catch (error) {
+      setFormsError(error.message ?? t("graph.formMenu.loadError"));
+    }
+  }, [t]);
 
   useEffect(() => {
-    let active = true;
+    loadSavedForms();
 
-    const loadRepairForms = async () => {
-      try {
-        const orders = await getKioskOrders(50);
-        if (!active) {
-          return;
-        }
-
-        const nextForms = orders.filter((item) => {
-          const fields = item?.fields ?? {};
-          return fields.form_type === "reparatur" || fields.kunde || fields.befundNr;
-        });
-
-        setRepairForms(nextForms);
-        setSelectedRepairFormId((current) => {
-          if (nextForms.some((item) => String(item.id) === current)) {
-            return current;
-          }
-          return nextForms[0] ? String(nextForms[0].id) : "";
-        });
-        setFormsError("");
-      } catch (error) {
-        if (active) {
-          setFormsError(error.message ?? t("graph.formMenu.loadError"));
-        }
-      } finally {
-        if (active) {
-          setFormsLoading(false);
-        }
-      }
-    };
-
-    loadRepairForms();
+    window.addEventListener("storage", loadSavedForms);
+    window.addEventListener(REPAIR_FORMS_UPDATED_EVENT, loadSavedForms);
 
     return () => {
-      active = false;
+      window.removeEventListener("storage", loadSavedForms);
+      window.removeEventListener(REPAIR_FORMS_UPDATED_EVENT, loadSavedForms);
     };
-  }, [t]);
+  }, [loadSavedForms]);
 
   const handleStart = () => {
     if (isRunning) {
       return;
     }
     setIsRunning(true);
-    setMessageKey("dashboard.messages.started");
+    setStatusMessage(t("dashboard.messages.started"));
   };
 
   const handleStop = () => {
@@ -310,36 +205,48 @@ export default function Graph() {
       return;
     }
     setIsRunning(false);
-    setMessageKey("dashboard.messages.stopped");
+    setStatusMessage(t("dashboard.messages.stopped"));
   };
 
   const handleTare = async () => {
     const ok = await tareScale();
     if (!ok) {
-      setMessageKey("dashboard.messages.tareFailed");
+      setStatusMessage(t("dashboard.messages.tareFailed"));
       return;
     }
 
     setWeight(0);
     appendSample(0);
-    setMessageKey("dashboard.messages.tareDone");
+    setStatusMessage(t("dashboard.messages.tareDone"));
   };
 
   const handleExport = async () => {
+    const selectedRepairForm = repairForms.find((item) => item.id === selectedRepairFormId) ?? null;
+    if (!selectedRepairForm) {
+      setStatusMessage(t("graph.messages.formRequired"));
+      return;
+    }
+
     const chartElement = chartRef.current;
     if (!chartElement) {
-      setMessageKey("graph.messages.exportFailed");
+      setStatusMessage(t("graph.messages.exportFailed"));
       return;
     }
 
     try {
-      const image = await svgToJpegBytes(chartElement, CHART_WIDTH, CHART_HEIGHT);
-      const pdf = buildPdf(image.bytes, image.width, image.height);
-      downloadBlob(pdf, createTimestampedFileName());
-      setMessageKey("graph.messages.exportDone");
+      const chartImage = await svgToJpegBytes(chartElement, CHART_WIDTH, CHART_HEIGHT);
+      const pdf = buildRepairFormPdf({
+        title: selectedRepairForm.title,
+        savedAt: selectedRepairForm.updatedAt,
+        fields: selectedRepairForm.fields,
+        chartImage,
+      });
+
+      downloadBlob(pdf, createRepairFormPdfFileName(selectedRepairForm.title));
+      setStatusMessage(t("graph.messages.exportDone"));
     } catch (error) {
       console.error("Export failed:", error);
-      setMessageKey("graph.messages.exportFailed");
+      setStatusMessage(t("graph.messages.exportFailed"));
     }
   };
 
@@ -427,7 +334,7 @@ export default function Graph() {
 
   const lastPointIndex = chartModel.points.length - 1;
   const selectedRepairForm = useMemo(
-    () => repairForms.find((item) => String(item.id) === selectedRepairFormId) ?? null,
+    () => repairForms.find((item) => item.id === selectedRepairFormId) ?? null,
     [repairForms, selectedRepairFormId],
   );
 
@@ -446,24 +353,23 @@ export default function Graph() {
                 className="graph-form-select"
                 value={selectedRepairFormId}
                 onChange={(event) => setSelectedRepairFormId(event.target.value)}
-                disabled={formsLoading || repairForms.length === 0}
+                disabled={repairForms.length === 0}
               >
-                {formsLoading ? <option value="">{t("graph.formMenu.loading")}</option> : null}
-                {!formsLoading && repairForms.length === 0 ? (
+                {repairForms.length === 0 ? (
                   <option value="">{t("graph.formMenu.empty")}</option>
                 ) : null}
-                {!formsLoading
-                  ? repairForms.map((item) => (
-                      <option key={item.id} value={String(item.id)}>
-                        {formatGraphFormLabel(item)}
-                      </option>
-                    ))
-                  : null}
+                {repairForms.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.title}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
           {selectedRepairForm ? (
-            <p className="graph-form-note">{formatGraphFormLabel(selectedRepairForm)}</p>
+            <p className="graph-form-note">
+              {selectedRepairForm.title} · {t("graph.formMenu.savedAt")} {new Date(selectedRepairForm.updatedAt).toLocaleString(locale)}
+            </p>
           ) : null}
           {formsError ? <p className="user-message">{formsError}</p> : null}
           <svg
@@ -592,7 +498,7 @@ export default function Graph() {
             onStop={handleStop}
             onExport={handleExport}
           />
-          {messageKey && <div className="status-message">{t(messageKey)}</div>}
+          {statusMessage ? <div className="status-message">{statusMessage}</div> : null}
         </aside>
       </div>
     </section>

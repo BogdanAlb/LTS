@@ -47,6 +47,11 @@ export default function Home() {
       to: "/grafic",
     },
     {
+      title: t("home.branches.reparatur.title"),
+      description: t("home.branches.reparatur.description"),
+      to: "/reparatur",
+    },
+    {
       title: t("home.branches.status.title"),
       description: t("home.branches.status.description"),
       to: "/status",

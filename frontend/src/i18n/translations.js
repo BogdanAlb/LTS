@@ -15,8 +15,8 @@ export const translations = {
         home: "Principal",
         dashboard: "Dashboard",
         graph: "Grafic",
+        reparatur: "Reparatur",
         status: "Status",
-        kioskOrders: "Comenzi Kiosk",
         settings: "Setari",
       },
     },
@@ -48,6 +48,10 @@ export const translations = {
           title: "Grafic",
           description: "Grafic live pentru evolutia greutatii cu export PDF.",
         },
+        reparatur: {
+          title: "Reparatur",
+          description: "Formularul de reparatie pentru completare si resetare.",
+        },
         status: {
           title: "Status",
           description: "Monitorizare conexiune Wi-Fi si timp de actualizare.",
@@ -78,10 +82,10 @@ export const translations = {
       ariaLabel: "Grafic evolutie greutate live",
       empty: "Porneste citirea live pentru a construi graficul.",
       formMenu: {
-        label: "Formular selectat",
-        loading: "Se incarca formularele...",
+        label: "Formular salvat",
         empty: "Nu exista formulare reparatur salvate.",
-        loadError: "Nu am putut incarca formularele reparatur.",
+        loadError: "Nu am putut incarca formularele reparatur salvate.",
+        savedAt: "salvat la",
       },
       actions: {
         export: "Export PDF",
@@ -89,6 +93,7 @@ export const translations = {
       messages: {
         exportDone: "PDF exportat",
         exportFailed: "Export PDF esuat",
+        formRequired: "Salveaza si selecteaza mai intai un formular de reparatie.",
       },
     },
     status: {
@@ -115,6 +120,7 @@ export const translations = {
         home: "Pagina principala",
         dashboard: "Citire live + comenzi cantar",
         graph: "Grafic live + export PDF",
+        reparatur: "Formular de reparatie",
         status: "Indicatori sistem si conectivitate",
         settings: "Setari frontend si organizare rute",
       },
@@ -158,46 +164,6 @@ export const translations = {
         },
       },
     },
-    kioskOrders: {
-      title: "Formular Comenzi Kiosk",
-      subtitle: "Pagina poate fi deschisa din reteaua locala folosind IP-ul dispozitivului kiosk si ruta /kiosk-orders.",
-      actions: {
-        send: "Send Form to Kiosk",
-        sending: "Sending...",
-      },
-      form: {
-        title: "Formular incarcare",
-        subtitle: "Formularul este pregatit pentru definirea comenzilor si poate fi extins ulterior fara sa schimbi fluxul de trimitere.",
-        placeholderNote: "Campurile actuale sunt temporare si pot fi inlocuite cand definim formularul final.",
-        fields: {
-          title: "Titlu comanda",
-          submittedBy: "Trimis de",
-          referenceCode: "Cod referinta",
-          notes: "Detalii comanda",
-        },
-        placeholders: {
-          title: "ex: Comanda kiosk 001",
-          submittedBy: "ex: Birou productie",
-          referenceCode: "ex: REF-2026-001",
-          notes: "Adauga aici detaliile care trebuie trimise catre kiosk.",
-        },
-      },
-      queue: {
-        title: "Ultimele trimiteri",
-        subtitle: "Ultimele formulare trimise catre aplicatia kiosk sunt stocate in backend si pot fi folosite ulterior in fluxul de procesare.",
-        loading: "Se incarca istoricul formularelor...",
-        empty: "Nu exista inca formulare trimise.",
-        submittedBy: "Trimis de",
-        sourceIp: "IP sursa",
-        referenceCode: "Referinta",
-      },
-      messages: {
-        titleRequired: "Titlul comenzii este obligatoriu.",
-        sent: "Formularul a fost trimis catre kiosk.",
-        sendError: "Nu am putut trimite formularul catre kiosk.",
-        loadError: "Nu am putut incarca istoricul formularelor kiosk.",
-      },
-    },
     notFound: {
       title: "Pagina negasita",
       subtitle: "Ruta ceruta nu exista in structura curenta.",
@@ -214,8 +180,8 @@ export const translations = {
         home: "Home",
         dashboard: "Dashboard",
         graph: "Graph",
+        reparatur: "Repair",
         status: "Status",
-        kioskOrders: "Kiosk Orders",
         settings: "Settings",
       },
     },
@@ -248,6 +214,10 @@ export const translations = {
           title: "Graph",
           description: "Live weight trend chart with PDF export.",
         },
+        reparatur: {
+          title: "Repair",
+          description: "Repair form page for entry and reset operations.",
+        },
         status: {
           title: "Status",
           description: "Wi-Fi connectivity and update monitoring.",
@@ -278,10 +248,10 @@ export const translations = {
       ariaLabel: "Live weight trend chart",
       empty: "Start live reading to build the chart.",
       formMenu: {
-        label: "Selected form",
-        loading: "Loading forms...",
-        empty: "No repair forms are saved yet.",
-        loadError: "Could not load repair forms.",
+        label: "Saved form",
+        empty: "No saved repair forms are available.",
+        loadError: "Could not load saved repair forms.",
+        savedAt: "saved at",
       },
       actions: {
         export: "Export PDF",
@@ -289,6 +259,7 @@ export const translations = {
       messages: {
         exportDone: "PDF exported",
         exportFailed: "PDF export failed",
+        formRequired: "Save and select a repair form first.",
       },
     },
     status: {
@@ -315,6 +286,7 @@ export const translations = {
         home: "Main page",
         dashboard: "Live readout + scale controls",
         graph: "Live chart + PDF export",
+        reparatur: "Repair form",
         status: "System and connectivity indicators",
         settings: "Frontend settings and route organization",
       },
@@ -358,46 +330,6 @@ export const translations = {
         },
       },
     },
-    kioskOrders: {
-      title: "Kiosk Order Form",
-      subtitle: "Open this page from any local network computer by using the kiosk device IP and the /kiosk-orders route.",
-      actions: {
-        send: "Send Form to Kiosk",
-        sending: "Sending...",
-      },
-      form: {
-        title: "Upload form",
-        subtitle: "This form is ready for kiosk order intake and can be expanded later without changing the send flow.",
-        placeholderNote: "The current fields are temporary placeholders until the final form definition is agreed.",
-        fields: {
-          title: "Order title",
-          submittedBy: "Submitted by",
-          referenceCode: "Reference code",
-          notes: "Order details",
-        },
-        placeholders: {
-          title: "e.g. Kiosk Order 001",
-          submittedBy: "e.g. Production Office",
-          referenceCode: "e.g. REF-2026-001",
-          notes: "Add the details that should be sent to the kiosk here.",
-        },
-      },
-      queue: {
-        title: "Recent submissions",
-        subtitle: "Recently sent forms are stored in the backend so they can be picked up by the kiosk flow later.",
-        loading: "Loading kiosk form history...",
-        empty: "No forms have been sent yet.",
-        submittedBy: "Submitted by",
-        sourceIp: "Source IP",
-        referenceCode: "Reference",
-      },
-      messages: {
-        titleRequired: "Order title is required.",
-        sent: "The form was sent to the kiosk.",
-        sendError: "Could not send the form to the kiosk.",
-        loadError: "Could not load kiosk form history.",
-      },
-    },
     notFound: {
       title: "Page not found",
       backHome: "Back to main page",
@@ -413,8 +345,8 @@ export const translations = {
         home: "Startseite",
         dashboard: "Dashboard",
         graph: "Grafik",
+        reparatur: "Reparatur",
         status: "Status",
-        kioskOrders: "Kiosk-Auftraege",
         settings: "Einstellungen",
       },
     },
@@ -447,6 +379,10 @@ export const translations = {
           title: "Grafik",
           description: "Live-Trendgrafik des Gewichts mit PDF-Export.",
         },
+        reparatur: {
+          title: "Reparatur",
+          description: "Reparaturformular zum Ausfuellen und Zuruecksetzen.",
+        },
         status: {
           title: "Status",
           description: "Ueberwachung von WLAN-Verbindung und Aktualisierung.",
@@ -477,10 +413,10 @@ export const translations = {
       ariaLabel: "Live-Gewichtsverlauf als Grafik",
       empty: "Starte die Live-Messung, um die Grafik aufzubauen.",
       formMenu: {
-        label: "Ausgewaehltes Formular",
-        loading: "Formulare werden geladen...",
-        empty: "Es sind noch keine Reparaturformulare gespeichert.",
-        loadError: "Reparaturformulare konnten nicht geladen werden.",
+        label: "Gespeichertes Formular",
+        empty: "Es sind keine gespeicherten Reparaturformulare verfuegbar.",
+        loadError: "Gespeicherte Reparaturformulare konnten nicht geladen werden.",
+        savedAt: "gespeichert am",
       },
       actions: {
         export: "PDF exportieren",
@@ -488,6 +424,7 @@ export const translations = {
       messages: {
         exportDone: "PDF exportiert",
         exportFailed: "PDF-Export fehlgeschlagen",
+        formRequired: "Speichere und waehle zuerst ein Reparaturformular aus.",
       },
     },
     status: {
@@ -515,6 +452,7 @@ export const translations = {
         home: "Hauptseite",
         dashboard: "Live-Anzeige + Waagensteuerung",
         graph: "Live-Grafik + PDF-Export",
+        reparatur: "Reparaturformular",
         status: "System- und Verbindungsindikatoren",
         settings: "Frontend-Einstellungen und Routenstruktur",
       },
@@ -557,46 +495,6 @@ export const translations = {
           deleted: "Benutzer geloescht.",
           deleteError: "Benutzer konnte nicht geloescht werden.",
         },
-      },
-    },
-    kioskOrders: {
-      title: "Kiosk-Auftragsformular",
-      subtitle: "Diese Seite kann von jedem Computer im lokalen Netz ueber die IP des Kiosk-Geraets und die Route /kiosk-orders geoeffnet werden.",
-      actions: {
-        send: "Send Form to Kiosk",
-        sending: "Sending...",
-      },
-      form: {
-        title: "Upload-Formular",
-        subtitle: "Das Formular ist fuer die Kiosk-Auftragsuebernahme vorbereitet und kann spaeter erweitert werden, ohne den Sendeablauf zu aendern.",
-        placeholderNote: "Die aktuellen Felder sind Platzhalter und koennen spaeter durch das endgueltige Formular ersetzt werden.",
-        fields: {
-          title: "Auftragstitel",
-          submittedBy: "Gesendet von",
-          referenceCode: "Referenzcode",
-          notes: "Auftragsdetails",
-        },
-        placeholders: {
-          title: "z. B. Kiosk-Auftrag 001",
-          submittedBy: "z. B. Produktionsbuero",
-          referenceCode: "z. B. REF-2026-001",
-          notes: "Hier die Details eintragen, die an den Kiosk gesendet werden sollen.",
-        },
-      },
-      queue: {
-        title: "Letzte Sendungen",
-        subtitle: "Zuletzt gesendete Formulare werden im Backend gespeichert und koennen spaeter in den Kiosk-Ablauf uebernommen werden.",
-        loading: "Verlauf der Kiosk-Formulare wird geladen...",
-        empty: "Es wurden noch keine Formulare gesendet.",
-        submittedBy: "Gesendet von",
-        sourceIp: "Quell-IP",
-        referenceCode: "Referenz",
-      },
-      messages: {
-        titleRequired: "Ein Auftragstitel ist erforderlich.",
-        sent: "Das Formular wurde an den Kiosk gesendet.",
-        sendError: "Das Formular konnte nicht an den Kiosk gesendet werden.",
-        loadError: "Der Verlauf der Kiosk-Formulare konnte nicht geladen werden.",
       },
     },
     notFound: {

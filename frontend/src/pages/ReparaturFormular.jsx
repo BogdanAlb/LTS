@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { submitKioskOrder } from "../api/kioskOrders";
-
-const BEARBEITER = [
-  ["b_jheld", "J.Held"],
-  ["b_hemus", "Hemus"],
-  ["b_alb", "Alb"],
-  ["b_ciobanu", "Ciobanu"],
-  ["b_mheld", "M.Held"],
-];
+import {
+  INITIAL_REPAIR_FORM,
+  canSaveRepairForm,
+  getRepairFormTitle,
+  saveRepairForm,
+} from "../repairForms/store";
 
 function Checkbox({ label, checked, onChange }) {
   return (
@@ -39,137 +36,35 @@ function RadioGroup({ name, options, value, onChange }) {
   );
 }
 
-const INITIAL = {
-  kunde: "",
-  befundNr: "",
-  kommission: "",
-  ltsNummer: "",
-  durchmesser: "",
-  steigung: "",
-  gesamtlaenge: "",
-  seite: "",
-  fv_gerollt: false,
-  fv_gewirbelt: false,
-  fv_geschliffen: false,
-  mb_EFEM: false,
-  mb_EFDM: false,
-  mb_MFM: false,
-  mb_MFDM: false,
-  mb_ZEM: false,
-  mb_ZDM: false,
-  i_wert: "",
-  vorsp: "",
-  vp_4pkt: false,
-  vp_shift: false,
-  vp_scheibe: false,
-  vp_getriebe: false,
-  vp_madenstift: false,
-  mont_festlager: false,
-  mont_loslager: false,
-  foto_kpl: false,
-  foto_links: false,
-  foto_rechts: false,
-  foto_beidseitig: false,
-  flansch_eingebaut: "",
-  flansch_ersetzt: "",
-  flansch_vorspannung: "",
-  zylinder_eingebaut: "",
-  zylinder_ersetzt: "",
-  zylinder_vorspannung: "",
-  s_ausbrueche_spindel: false,
-  s_ausbrueche_mutter: false,
-  s_kugeln_deformiert: false,
-  s_kugeleindrucke: false,
-  s_abstreifer: false,
-  s_umlenkstuecke: false,
-  s_ohne_vorspannung: false,
-  s_zu_wenig_kugeln: false,
-  s_spindel_eingelaufen: false,
-  s_wasserschaden: false,
-  s_loch_spindel: false,
-  s_passungen: false,
-  s_laufspurauspr: false,
-  s_fett_verschmutzt: false,
-  s_fett_braun: false,
-  s_unzureichend_schm: false,
-  s_wenig_schm: false,
-  s_rost: false,
-  s_spaene: false,
-  s_mutter_hakt: false,
-  s_spindel_punktuell: false,
-  s_montage_umlenkung: false,
-  kgt_reparabel: "",
-  zeichnung: "",
-  mutternrichtung: "",
-  freinotiz: "",
-  b_jheld: false,
-  b_hemus: false,
-  b_alb: false,
-  b_ciobanu: false,
-  b_mheld: false,
-};
-
-function getSubmissionTitle(form) {
-  const summary = [form.kunde, form.befundNr, form.ltsNummer]
-    .map((value) => value.trim())
-    .filter(Boolean)
-    .join(" | ");
-  const title = summary ? `Reparatur: ${summary}` : "Reparaturformular";
-  return title.slice(0, 120);
-}
-
-function getSubmittedBy(form) {
-  const selected = BEARBEITER
-    .filter(([key]) => form[key])
-    .map(([, label]) => label);
-  if (selected.length === 0) {
-    return null;
-  }
-  return selected.join(", ").slice(0, 120);
-}
-
 export default function ReparaturFormular() {
-  const [form, setForm] = useState(INITIAL);
-  const [saved, setSaved] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [form, setForm] = useState(() => ({ ...INITIAL_REPAIR_FORM }));
+  const [feedback, setFeedback] = useState("");
+  const [feedbackType, setFeedbackType] = useState("success");
 
   const set = (key) => (val) => setForm((current) => ({ ...current, [key]: val }));
   const chk = (key) => (event) => setForm((current) => ({ ...current, [key]: event.target.checked }));
 
-  async function handleSave(event) {
-    event.preventDefault();
-    if (isSubmitting) {
+  function handleSave() {
+    if (!canSaveRepairForm(form)) {
+      setFeedbackType("error");
+      setFeedback("Bitte Kunde und Befund-Nr. ausfuellen.");
       return;
     }
 
-    setErrorMessage("");
-    setSaved(false);
-    setIsSubmitting(true);
-
     try {
-      await submitKioskOrder({
-        title: getSubmissionTitle(form),
-        submitted_by: getSubmittedBy(form),
-        fields: {
-          form_type: "reparatur",
-          ...form,
-        },
-      });
-      setSaved(true);
-      window.setTimeout(() => setSaved(false), 3000);
+      const savedForm = saveRepairForm(form);
+      setFeedbackType("success");
+      setFeedback(`Formular gespeichert: ${savedForm.title}`);
     } catch (error) {
-      setErrorMessage(error.message ?? "Formularul nu a putut fi trimis catre kiosk.");
-    } finally {
-      setIsSubmitting(false);
+      setFeedbackType("error");
+      setFeedback(error.message ?? "Formular konnte nicht gespeichert werden.");
     }
   }
 
   function handleReset() {
     if (window.confirm("Resetezi toate campurile?")) {
-      setForm(INITIAL);
-      setSaved(false);
-      setErrorMessage("");
+      setForm({ ...INITIAL_REPAIR_FORM });
+      setFeedback("");
     }
   }
 
@@ -181,24 +76,18 @@ export default function ReparaturFormular() {
         <div>
           <h2 className="page-title">Ablauf Reparatur</h2>
           <p className="page-subtitle">
-            Formularul este trimis in aplicatia kiosk prin endpoint-ul generic de comenzi.
+            Formularname: {getRepairFormTitle(form) || "Kunde - Befund-Nr."}
           </p>
         </div>
-        <button
-          type="submit"
-          form="reparatur-form"
-          className="btn btn--primary rf-toolbar__send"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Sending..." : "Send Form to Kiosk"}
-        </button>
       </div>
 
-      {saved ? <p className="rf-feedback rf-feedback--success">Formular trimis catre kiosk.</p> : null}
-      {errorMessage ? <p className="rf-feedback rf-feedback--error">{errorMessage}</p> : null}
+      {feedback ? (
+        <p className={`rf-feedback rf-feedback--${feedbackType}`}>
+          {feedback}
+        </p>
+      ) : null}
 
-      <form id="reparatur-form" onSubmit={handleSave}>
-        <div className="rf-page">
+      <div className="rf-page">
           <div className="rf-header">
             <div className="rf-logo">
               <div className="rf-logo__title">LINEARTECHNIK</div>
@@ -425,15 +314,14 @@ export default function ReparaturFormular() {
           </div>
 
           <div className="rf-actions">
+            <button type="button" className="btn btn--primary" onClick={handleSave}>
+              Formular speichern
+            </button>
             <button type="button" className="btn btn--danger btn--sm" onClick={handleReset}>
               Zuruecksetzen
             </button>
-            <button type="submit" className="btn btn--primary" disabled={isSubmitting}>
-              {saved ? "✓ Gespeichert" : isSubmitting ? "Sending..." : "Speichern"}
-            </button>
           </div>
         </div>
-      </form>
     </section>
   );
 }
@@ -448,29 +336,6 @@ const CSS = `
   margin-bottom: 1rem;
 }
 
-.rf-toolbar__send {
-  min-width: 240px;
-}
-
-.rf-feedback {
-  margin: 0 0 1rem;
-  padding: 0.8rem 1rem;
-  border-radius: 12px;
-  font-weight: 600;
-}
-
-.rf-feedback--success {
-  color: #064e3b;
-  background: rgba(16, 185, 129, 0.22);
-  border: 1px solid rgba(16, 185, 129, 0.45);
-}
-
-.rf-feedback--error {
-  color: #7f1d1d;
-  background: rgba(239, 68, 68, 0.18);
-  border: 1px solid rgba(239, 68, 68, 0.45);
-}
-
 .rf-page {
   max-width: 860px;
   margin: 0 auto;
@@ -481,6 +346,26 @@ const CSS = `
   background: var(--panel-soft-bg);
   border: 1px solid var(--line);
   border-radius: 18px;
+}
+
+.rf-feedback {
+  max-width: 860px;
+  margin: 0 auto 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.rf-feedback--success {
+  color: #064e3b;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.45);
+}
+
+.rf-feedback--error {
+  color: #7f1d1d;
+  background: rgba(239, 68, 68, 0.16);
+  border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
 .rf-header {
@@ -787,10 +672,6 @@ const CSS = `
 @media (max-width: 600px) {
   .rf-toolbar {
     flex-direction: column;
-  }
-
-  .rf-toolbar__send {
-    width: 100%;
   }
 
   .rf-damage-grid {

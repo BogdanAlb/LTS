@@ -7,6 +7,7 @@ const routes = [
   { path: "/", descriptionKey: "settings.routeDescriptions.home" },
   { path: "/dashboard", descriptionKey: "settings.routeDescriptions.dashboard" },
   { path: "/grafic", descriptionKey: "settings.routeDescriptions.graph" },
+  { path: "/reparatur", descriptionKey: "settings.routeDescriptions.reparatur" },
   { path: "/status", descriptionKey: "settings.routeDescriptions.status" },
   { path: "/settings", descriptionKey: "settings.routeDescriptions.settings" },
 ];

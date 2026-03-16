@@ -30,18 +30,6 @@ CREATE TABLE IF NOT EXISTS user_settings (
 );
 """
 
-KIOSK_ORDER_SUBMISSIONS_SCHEMA_SQL = """
-CREATE TABLE IF NOT EXISTS kiosk_order_submissions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    submitted_by TEXT,
-    source_ip TEXT,
-    fields_json TEXT NOT NULL,
-    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
-);
-"""
-
-
 def _apply_pragmas(conn: sqlite3.Connection) -> None:
     """Apply connection/database pragmas.
 
@@ -103,7 +91,6 @@ def init_db(schema_sql: Optional[str] = None) -> None:
     try:
         _apply_pragmas(conn)
         conn.executescript(USERS_SCHEMA_SQL)
-        conn.executescript(KIOSK_ORDER_SUBMISSIONS_SCHEMA_SQL)
         _ensure_users_migration(conn)
         _ensure_admin_user(conn)
         _ensure_user_settings(conn)

@@ -14,8 +14,8 @@ export default function MainLayout() {
     { to: "/", label: t("layout.nav.home") },
     { to: "/dashboard", label: t("layout.nav.dashboard") },
     { to: "/grafic", label: t("layout.nav.graph") },
+    { to: "/reparatur", label: t("layout.nav.reparatur") },
     { to: "/status", label: t("layout.nav.status") },
-    { to: "/kiosk-orders", label: t("layout.nav.kioskOrders") },
     { to: "/settings", label: t("layout.nav.settings") },
   ];
 
