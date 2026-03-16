@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import topLogo from "../assets/lts-logo.png";
 import { useSession } from "../auth/useSession";
 import StatusBar from "../components/StatusBar";
@@ -7,28 +7,31 @@ import { useLanguage } from "../i18n/useLanguage";
 export default function MainLayout() {
   const { t } = useLanguage();
   const { isAuthenticated, logout, user } = useSession();
+  const location = useLocation();
+  const isLoginRoute = !isAuthenticated && location.pathname === "/";
 
   const navItems = [
     { to: "/", label: t("layout.nav.home") },
     { to: "/dashboard", label: t("layout.nav.dashboard") },
     { to: "/grafic", label: t("layout.nav.graph") },
     { to: "/status", label: t("layout.nav.status") },
+    { to: "/kiosk-orders", label: t("layout.nav.kioskOrders") },
     { to: "/settings", label: t("layout.nav.settings") },
   ];
 
   return (
-    <div className={`app-shell${isAuthenticated ? "" : " login-shell"}`}>
+    <div className={`app-shell${isLoginRoute ? " login-shell" : ""}`}>
       <StatusBar />
 
-      <header className={`main-header${isAuthenticated ? "" : " login-header"}`}>
-        <div className={`brand-block${isAuthenticated ? "" : " login-brand-block"}`}>
+      <header className={`main-header${isLoginRoute ? " login-header" : ""}`}>
+        <div className={`brand-block${isLoginRoute ? " login-brand-block" : ""}`}>
           <img
             src={topLogo}
             alt="LTS Logo"
-            className={`brand-logo${isAuthenticated ? "" : " login-brand-logo"}`}
+            className={`brand-logo${isLoginRoute ? " login-brand-logo" : ""}`}
           />
           <div>
-            <p className={`brand-title${isAuthenticated ? "" : " login-brand-title"}`}>{t("appName")}</p>
+            <p className={`brand-title${isLoginRoute ? " login-brand-title" : ""}`}>{t("appName")}</p>
           </div>
         </div>
 
@@ -59,7 +62,7 @@ export default function MainLayout() {
         ) : null}
       </header>
 
-      <main className={`main-content${isAuthenticated ? "" : " login-main-content"}`}>
+      <main className={`main-content${isLoginRoute ? " login-main-content" : ""}`}>
         <Outlet />
       </main>
     </div>

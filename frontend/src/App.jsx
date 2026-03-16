@@ -5,6 +5,8 @@ import MainLayout from "./layouts/MainLayout";
 import Dashboard from "./pages/Dashboard";
 import Graph from "./pages/Graph";
 import Home from "./pages/Home";
+import KioskOrders from "./pages/KioskOrders";
+import ReparaturFormular from "./pages/ReparaturFormular";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
 import Status from "./pages/Status";
@@ -54,6 +56,8 @@ export default function App() {
             </ProtectedRoute>
           )}
         />
+        <Route path="/kiosk-orders" element={<KioskOrders />} />
+        <Route path="/reparatur" element={<ReparaturFormular />} />
         <Route path="*" element={<NotFound />} />
       </Route>
       <Route path="/home" element={<Navigate to="/" replace />} />

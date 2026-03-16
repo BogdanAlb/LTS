@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { getKioskOrders } from "../api/kioskOrders";
 import { getCurrentWeight, tareScale } from "../api/sensor";
 import ControlPanel from "../components/ControlPanel";
 import GaugeDisplay from "../components/GaugeDisplay";
@@ -186,6 +187,18 @@ function createTimestampedFileName() {
   return `grafic-greutate-${year}${month}${day}-${hour}${minute}${second}.pdf`;
 }
 
+function formatGraphFormLabel(item) {
+  const kunde = String(item?.fields?.kunde ?? "").trim() || String(item?.title ?? "").trim() || "Formular";
+  const befundNr = String(item?.fields?.befundNr ?? "").trim();
+  const suffix = typeof item?.id === "number" ? ` - ${item.id}` : "";
+
+  if (!befundNr) {
+    return `${kunde}${suffix}`.trim();
+  }
+
+  return `${kunde} Befund ${befundNr}${suffix}`;
+}
+
 export default function Graph() {
   const { locale, t } = useLanguage();
   const chartRef = useRef(null);
@@ -193,6 +206,10 @@ export default function Graph() {
   const [isRunning, setIsRunning] = useState(false);
   const [messageKey, setMessageKey] = useState("");
   const [samples, setSamples] = useState([]);
+  const [repairForms, setRepairForms] = useState([]);
+  const [selectedRepairFormId, setSelectedRepairFormId] = useState("");
+  const [formsLoading, setFormsLoading] = useState(true);
+  const [formsError, setFormsError] = useState("");
 
   const appendSample = useCallback((value) => {
     setSamples((previous) => {
@@ -238,6 +255,47 @@ export default function Graph() {
     const timeoutId = setTimeout(() => setMessageKey(""), 2500);
     return () => clearTimeout(timeoutId);
   }, [messageKey]);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadRepairForms = async () => {
+      try {
+        const orders = await getKioskOrders(50);
+        if (!active) {
+          return;
+        }
+
+        const nextForms = orders.filter((item) => {
+          const fields = item?.fields ?? {};
+          return fields.form_type === "reparatur" || fields.kunde || fields.befundNr;
+        });
+
+        setRepairForms(nextForms);
+        setSelectedRepairFormId((current) => {
+          if (nextForms.some((item) => String(item.id) === current)) {
+            return current;
+          }
+          return nextForms[0] ? String(nextForms[0].id) : "";
+        });
+        setFormsError("");
+      } catch (error) {
+        if (active) {
+          setFormsError(error.message ?? t("graph.formMenu.loadError"));
+        }
+      } finally {
+        if (active) {
+          setFormsLoading(false);
+        }
+      }
+    };
+
+    loadRepairForms();
+
+    return () => {
+      active = false;
+    };
+  }, [t]);
 
   const handleStart = () => {
     if (isRunning) {
@@ -368,12 +426,46 @@ export default function Graph() {
   }, [locale, samples]);
 
   const lastPointIndex = chartModel.points.length - 1;
+  const selectedRepairForm = useMemo(
+    () => repairForms.find((item) => String(item.id) === selectedRepairFormId) ?? null,
+    [repairForms, selectedRepairFormId],
+  );
 
   return (
     <section className="page graph-page">
       <div className="graph-layout">
         <div className="graph-card">
-          <p className="graph-card-title">{t("graph.chartTitle")}</p>
+          <div className="graph-card-header">
+            <p className="graph-card-title">{t("graph.chartTitle")}</p>
+            <div className="graph-form-menu">
+              <label className="graph-form-label" htmlFor="graph-form-select">
+                {t("graph.formMenu.label")}
+              </label>
+              <select
+                id="graph-form-select"
+                className="graph-form-select"
+                value={selectedRepairFormId}
+                onChange={(event) => setSelectedRepairFormId(event.target.value)}
+                disabled={formsLoading || repairForms.length === 0}
+              >
+                {formsLoading ? <option value="">{t("graph.formMenu.loading")}</option> : null}
+                {!formsLoading && repairForms.length === 0 ? (
+                  <option value="">{t("graph.formMenu.empty")}</option>
+                ) : null}
+                {!formsLoading
+                  ? repairForms.map((item) => (
+                      <option key={item.id} value={String(item.id)}>
+                        {formatGraphFormLabel(item)}
+                      </option>
+                    ))
+                  : null}
+              </select>
+            </div>
+          </div>
+          {selectedRepairForm ? (
+            <p className="graph-form-note">{formatGraphFormLabel(selectedRepairForm)}</p>
+          ) : null}
+          {formsError ? <p className="user-message">{formsError}</p> : null}
           <svg
             ref={chartRef}
             className="graph-svg"

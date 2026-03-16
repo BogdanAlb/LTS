@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from routes import kiosk_orders
 from routes import sensor
 from storage.db import init_db
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,6 +19,7 @@ app.add_middleware(
 app.include_router(sensor.router, prefix="/sensors", tags=["sensors"])
 app.include_router(measurements.router, prefix="/measurements", tags=["measurements"])
 app.include_router(users.router, prefix="/users", tags=["users"])
+app.include_router(kiosk_orders.router, prefix="/kiosk", tags=["kiosk"])
 
 
 @app.on_event("startup")
