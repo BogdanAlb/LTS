@@ -9,6 +9,7 @@ export default function MainLayout() {
   const { isAuthenticated, logout, user } = useSession();
   const location = useLocation();
   const isLoginRoute = !isAuthenticated && location.pathname === "/";
+  const isDashboardRoute = isAuthenticated && location.pathname === "/dashboard";
 
   const navItems = [
     { to: "/", label: t("layout.nav.home") },
@@ -20,7 +21,7 @@ export default function MainLayout() {
   ];
 
   return (
-    <div className={`app-shell${isLoginRoute ? " login-shell" : ""}`}>
+    <div className={`app-shell${isLoginRoute ? " login-shell" : ""}${isDashboardRoute ? " dashboard-shell" : ""}`}>
       <StatusBar />
 
       <header className={`main-header${isLoginRoute ? " login-header" : ""}`}>
@@ -62,7 +63,7 @@ export default function MainLayout() {
         ) : null}
       </header>
 
-      <main className={`main-content${isLoginRoute ? " login-main-content" : ""}`}>
+      <main className={`main-content${isLoginRoute ? " login-main-content" : ""}${isDashboardRoute ? " dashboard-main-content" : ""}`}>
         <Outlet />
       </main>
     </div>

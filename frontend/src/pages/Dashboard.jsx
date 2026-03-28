@@ -22,7 +22,7 @@ export default function Dashboard() {
 
     if (isRunning) {
       fetchWeight();
-      poller = setInterval(fetchWeight, 500);
+      poller = setInterval(fetchWeight, 300);
     }
 
     return () => {
@@ -41,26 +41,12 @@ export default function Dashboard() {
     return () => clearTimeout(timeoutId);
   }, [messageKey]);
 
-  const handleStart = () => {
-    if (isRunning) {
-      return;
-    }
-    setIsRunning(true);
-    setMessageKey("dashboard.messages.started");
-  };
-
-  const handleStop = () => {
-    if (!isRunning) {
-      return;
-    }
-    setIsRunning(false);
-    setMessageKey("dashboard.messages.stopped");
-  };
 
   const handleTare = async () => {
     const ok = await tareScale();
     if (ok) {
       setWeight(0);
+      setIsRunning(true);
       setMessageKey("dashboard.messages.tareDone");
       return;
     }
@@ -68,14 +54,12 @@ export default function Dashboard() {
   };
 
   return (
-    <section className="page">
+    <section className="page dashboard-page">
       <div className="dashboard-panel">
-        <GaugeDisplay value={weight} />
-        <ControlPanel
-          onTare={handleTare}
-          onStart={handleStart}
-          onStop={handleStop}
-        />
+        <div className="dashboard-live-layout">
+          <GaugeDisplay value={weight} className="dashboard-gauge-display" />
+          <ControlPanel onTare={handleTare} className="dashboard-controls" />
+        </div>
         {messageKey && <div className="status-message">{t(messageKey)}</div>}
       </div>
     </section>

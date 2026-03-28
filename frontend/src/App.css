@@ -75,6 +75,12 @@ code {
   overflow: hidden;
 }
 
+.app-shell.dashboard-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
 .app-shell.login-shell .main-header {
   flex-shrink: 0;
 }
@@ -202,11 +208,26 @@ code {
   overflow: hidden;
 }
 
+.main-content.dashboard-main-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+}
+
 .page {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 1.5rem;
+}
+
+.dashboard-page {
+  width: min(100%, 2200px);
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .page-title {
@@ -398,15 +419,37 @@ code {
 }
 
 .dashboard-panel {
+  --dashboard-ui-scale: 3;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: 1.25rem;
+}
+
+.dashboard-live-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
 }
 
 .gauge-display {
   width: 100%;
   text-align: center;
+}
+
+.dashboard-gauge-display {
+  grid-column: 2;
+  justify-self: center;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.dashboard-gauge-display h2 {
+  margin-bottom: calc(0.85rem * var(--dashboard-ui-scale));
+  font-size: calc(1.8rem * var(--dashboard-ui-scale));
 }
 
 .gauge-display h2 {
@@ -428,11 +471,33 @@ code {
   text-shadow: none;
 }
 
+.dashboard-gauge-display .weight-display {
+  font-size: clamp(
+    calc(3.075rem * var(--dashboard-ui-scale)),
+    calc(10.25vw * var(--dashboard-ui-scale)),
+    calc(5.125rem * var(--dashboard-ui-scale))
+  );
+}
+
 .button-row {
   display: flex;
   gap: 0.8rem;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.dashboard-controls {
+  grid-column: 3;
+  align-self: start;
+  justify-self: end;
+  justify-content: flex-end;
+}
+
+.dashboard-controls button {
+  font-size: calc(1.05rem * var(--dashboard-ui-scale));
+  padding: calc(0.8rem * var(--dashboard-ui-scale)) calc(1.6rem * var(--dashboard-ui-scale));
+  min-height: calc(48px * var(--dashboard-ui-scale));
+  min-width: calc(140px * var(--dashboard-ui-scale));
 }
 
 button {
@@ -458,7 +523,7 @@ button:active {
 }
 
 button.tare {
-  background: linear-gradient(130deg, #2563eb, #3b82f6);
+  background: linear-gradient(130deg, #be123c, #f43f5e);
 }
 
 button.start {
@@ -477,6 +542,11 @@ button.export {
   margin-top: 0.2rem;
   font-size: 1rem;
   color: var(--warn);
+}
+
+.dashboard-panel .status-message {
+  font-size: calc(1rem * var(--dashboard-ui-scale));
+  text-align: center;
 }
 
 .graph-page {
@@ -585,6 +655,23 @@ button.export {
   .graph-live-panel {
     position: static;
     width: 100%;
+  }
+
+  .dashboard-live-layout {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .dashboard-gauge-display {
+    grid-column: 1;
+    width: 100%;
+  }
+
+  .dashboard-controls {
+    grid-column: 1;
+    align-self: center;
+    justify-self: center;
+    justify-content: center;
   }
 }
 

@@ -1,18 +1,13 @@
 import { useLanguage } from "../i18n/useLanguage";
 
-export default function ControlPanel({ onTare, onStart, onStop, onExport }) {
+export default function ControlPanel({ onTare, onExport, className = "" }) {
   const { t } = useLanguage();
+  const rowClassName = ["button-row", className].filter(Boolean).join(" ");
 
   return (
-    <div className="button-row">
+    <div className={rowClassName}>
       <button type="button" onClick={onTare} className="tare">
         {t("dashboard.actions.tare")}
-      </button>
-      <button type="button" onClick={onStart} className="start">
-        {t("dashboard.actions.start")}
-      </button>
-      <button type="button" onClick={onStop} className="stop">
-        {t("dashboard.actions.stop")}
       </button>
       {typeof onExport === "function" && (
         <button type="button" onClick={onExport} className="export">
