@@ -9,6 +9,7 @@ export default function Dashboard() {
   const [weight, setWeight] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
   const [messageKey, setMessageKey] = useState("");
+  const [displayUnit, setDisplayUnit] = useState("g");
 
   const fetchWeight = useCallback(async () => {
     const value = await getCurrentWeight();
@@ -53,12 +54,22 @@ export default function Dashboard() {
     setMessageKey("dashboard.messages.tareFailed");
   };
 
+  const handleToggleUnit = () => {
+    setDisplayUnit((current) => (current === "g" ? "n" : "g"));
+  };
+
   return (
     <section className="page dashboard-page">
       <div className="dashboard-panel">
         <div className="dashboard-live-layout">
-          <GaugeDisplay value={weight} className="dashboard-gauge-display" />
-          <ControlPanel onTare={handleTare} className="dashboard-controls" />
+          <GaugeDisplay value={weight} unit={displayUnit} className="dashboard-gauge-display" />
+          <ControlPanel
+            onTare={handleTare}
+            onToggleUnit={handleToggleUnit}
+            unitToggleLabel={t(`dashboard.units.${displayUnit === "g" ? "n" : "g"}`)}
+            unitToggleAriaLabel={t("dashboard.actions.changeUnit")}
+            className="dashboard-controls"
+          />
         </div>
         {messageKey && <div className="status-message">{t(messageKey)}</div>}
       </div>

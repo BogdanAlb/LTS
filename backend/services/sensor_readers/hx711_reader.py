@@ -29,7 +29,7 @@ class HX711Reader:
         """Citește greutatea medie (în grame)."""
         grams = self.hx.get_weight_mean(samples)
         grams_rounded = int(grams / 10) * 10
-        return round(grams_rounded, 1)
+        return max(0.0, round(grams_rounded, 1))
 
 
 # ---------- Funcții auxiliare doar pentru testare locală ----------
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     try:
         while True:
             grams = hx.get_weight_mean(7)
-            grams_rounded = int(grams / 10) * 10
+            grams_rounded = max(0, int(grams / 10) * 10)
             print(f"\rWeight: {grams_rounded:.0f} g ({grams_rounded/1000:.3f} kg)", end="", flush=True)
 
             key = get_key_nonblocking()

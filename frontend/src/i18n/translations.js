@@ -66,8 +66,13 @@ export const translations = {
       liveWeight: "Greutate Live",
       actions: {
         tare: "Tare",
+        changeUnit: "Schimba unitatea",
         start: "Start",
         stop: "Stop",
+      },
+      units: {
+        g: "g",
+        n: "N",
       },
       messages: {
         started: "Citirea live a pornit",
@@ -232,8 +237,13 @@ export const translations = {
       liveWeight: "Live Weight",
       actions: {
         tare: "Tare",
+        changeUnit: "Change unit",
         start: "Start",
         stop: "Stop",
+      },
+      units: {
+        g: "g",
+        n: "N",
       },
       messages: {
         started: "Live reading started",
@@ -397,8 +407,13 @@ export const translations = {
       liveWeight: "Live-Gewicht",
       actions: {
         tare: "Tara",
+        changeUnit: "Einheit wechseln",
         start: "Start",
         stop: "Stopp",
+      },
+      units: {
+        g: "g",
+        n: "N",
       },
       messages: {
         started: "Live-Messung gestartet",

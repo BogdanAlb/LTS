@@ -420,6 +420,7 @@ code {
 
 .dashboard-panel {
   --dashboard-ui-scale: 3;
+  --dashboard-controls-width: calc(160px * var(--dashboard-ui-scale));
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -429,9 +430,12 @@ code {
 
 .dashboard-live-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns:
+    minmax(var(--dashboard-controls-width), 1fr)
+    auto
+    minmax(var(--dashboard-controls-width), 1fr);
   align-items: center;
-  gap: 1.5rem;
+  gap: clamp(2rem, 4vw, 4rem);
   width: 100%;
 }
 
@@ -444,7 +448,9 @@ code {
   grid-column: 2;
   justify-self: center;
   width: fit-content;
+  min-width: 0;
   max-width: 100%;
+  transform: translateX(calc(var(--dashboard-controls-width) * -0.35));
 }
 
 .dashboard-gauge-display h2 {
@@ -477,6 +483,7 @@ code {
     calc(10.25vw * var(--dashboard-ui-scale)),
     calc(5.125rem * var(--dashboard-ui-scale))
   );
+  white-space: nowrap;
 }
 
 .button-row {
@@ -490,14 +497,29 @@ code {
   grid-column: 3;
   align-self: start;
   justify-self: end;
+  width: var(--dashboard-controls-width);
+  min-width: var(--dashboard-controls-width);
+  flex-direction: column;
+  align-items: flex-end;
   justify-content: flex-end;
 }
 
 .dashboard-controls button {
+  width: 100%;
   font-size: calc(1.05rem * var(--dashboard-ui-scale));
   padding: calc(0.8rem * var(--dashboard-ui-scale)) calc(1.6rem * var(--dashboard-ui-scale));
   min-height: calc(48px * var(--dashboard-ui-scale));
   min-width: calc(140px * var(--dashboard-ui-scale));
+}
+
+.dashboard-controls button.tare {
+  position: relative;
+  top: -3cm;
+}
+
+.dashboard-controls button.unit-toggle {
+  position: relative;
+  top: 5cm;
 }
 
 button {
@@ -524,6 +546,10 @@ button:active {
 
 button.tare {
   background: linear-gradient(130deg, #be123c, #f43f5e);
+}
+
+button.unit-toggle {
+  background: linear-gradient(130deg, #0f766e, #14b8a6);
 }
 
 button.start {
@@ -657,22 +683,6 @@ button.export {
     width: 100%;
   }
 
-  .dashboard-live-layout {
-    grid-template-columns: 1fr;
-    align-items: stretch;
-  }
-
-  .dashboard-gauge-display {
-    grid-column: 1;
-    width: 100%;
-  }
-
-  .dashboard-controls {
-    grid-column: 1;
-    align-self: center;
-    justify-self: center;
-    justify-content: center;
-  }
 }
 
 .info-grid {

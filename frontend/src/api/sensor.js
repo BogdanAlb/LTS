@@ -5,7 +5,11 @@ import API_BASE from "./baseUrl";
 export async function getCurrentWeight() {
   try {
     const res = await axios.get(`${API_BASE}/sensors/hx711`);
-    return res.data.weight_g;
+    const normalizedWeight = Number(res.data.weight_g);
+    if (Number.isNaN(normalizedWeight)) {
+      return null;
+    }
+    return Math.max(0, normalizedWeight);
   } catch (error) {
     console.error("Error fetching weight:", error);
     return null;
