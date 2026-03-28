@@ -10,12 +10,27 @@ const POLL_INTERVAL_MS = 500;
 const MAX_SAMPLES = 120;
 const CHART_WIDTH = 980;
 const CHART_HEIGHT = 430;
+const GRAMS_TO_NEWTONS = 9.80665e-4;
 const CHART_PADDING = {
   top: 24,
   right: 24,
   bottom: 42,
   left: 62,
 };
+
+function formatChartValue(value, unit) {
+  const normalizedValue = Number(value) || 0;
+  const displayValue = unit === "n" ? normalizedValue * GRAMS_TO_NEWTONS : normalizedValue;
+
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: unit === "n" ? 3 : 1,
+    useGrouping: true,
+  })
+    .format(displayValue)
+    .replaceAll(",", ".");
+}
+
 function base64ToBytes(base64) {
   const binary = window.atob(base64);
   const bytes = new Uint8Array(binary.length);
@@ -47,7 +62,37 @@ function normalizeSvgMarkup(svgElement) {
   return svgText;
 }
 
-function svgToJpegBytes(svgElement, width, height) {
+function createPrintableChart(svgElement) {
+  const exportSvg = svgElement.cloneNode(true);
+  const [backgroundRect] = exportSvg.querySelectorAll("rect");
+
+  if (backgroundRect) {
+    backgroundRect.setAttribute("fill", "#ffffff");
+    backgroundRect.setAttribute("stroke", "#111111");
+    backgroundRect.setAttribute("stroke-width", "1");
+  }
+
+  exportSvg.querySelectorAll("line").forEach((line) => {
+    const isAxis = Number(line.getAttribute("stroke-width") || 0) > 1;
+    line.setAttribute("stroke", isAxis ? "#111111" : "#bdbdbd");
+  });
+
+  exportSvg.querySelectorAll("text").forEach((label) => {
+    label.setAttribute("fill", "#111111");
+  });
+
+  exportSvg.querySelectorAll("path").forEach((path) => {
+    path.setAttribute("stroke", "#111111");
+  });
+
+  exportSvg.querySelectorAll("circle").forEach((point) => {
+    point.setAttribute("fill", "#111111");
+  });
+
+  return exportSvg;
+}
+
+function svgToJpegBytes(svgElement, width, height, { backgroundColor = "#081322" } = {}) {
   return new Promise((resolve, reject) => {
     const svgBlob = new Blob([normalizeSvgMarkup(svgElement)], {
       type: "image/svg+xml;charset=utf-8",
@@ -67,7 +112,7 @@ function svgToJpegBytes(svgElement, width, height) {
         return;
       }
 
-      context.fillStyle = "#081322";
+      context.fillStyle = backgroundColor;
       context.fillRect(0, 0, width, height);
       context.drawImage(image, 0, 0, width, height);
 
@@ -113,6 +158,7 @@ export default function Graph() {
   const chartRef = useRef(null);
   const [weight, setWeight] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [displayUnit, setDisplayUnit] = useState("g");
   const [statusMessage, setStatusMessage] = useState("");
   const [samples, setSamples] = useState([]);
   const [repairForms, setRepairForms] = useState([]);
@@ -121,7 +167,8 @@ export default function Graph() {
 
   const appendSample = useCallback((value) => {
     setSamples((previous) => {
-      const next = [...previous, { timestamp: Date.now(), value }];
+      const normalizedValue = Math.max(0, Number(value) || 0);
+      const next = [...previous, { timestamp: Date.now(), value: normalizedValue }];
       if (next.length > MAX_SAMPLES) {
         next.splice(0, next.length - MAX_SAMPLES);
       }
@@ -215,9 +262,14 @@ export default function Graph() {
       return;
     }
 
-    setWeight(0);
-    appendSample(0);
+    const resetValue = 0;
+    setWeight(resetValue);
+    setSamples([{ timestamp: Date.now(), value: resetValue }]);
     setStatusMessage(t("dashboard.messages.tareDone"));
+  };
+
+  const handleToggleUnit = () => {
+    setDisplayUnit((current) => (current === "g" ? "n" : "g"));
   };
 
   const handleExport = async () => {
@@ -234,7 +286,10 @@ export default function Graph() {
     }
 
     try {
-      const chartImage = await svgToJpegBytes(chartElement, CHART_WIDTH, CHART_HEIGHT);
+      const printableChart = createPrintableChart(chartElement);
+      const chartImage = await svgToJpegBytes(printableChart, CHART_WIDTH, CHART_HEIGHT, {
+        backgroundColor: "#ffffff",
+      });
       const pdf = buildRepairFormPdf({
         title: selectedRepairForm.title,
         savedAt: selectedRepairForm.updatedAt,
@@ -267,7 +322,7 @@ export default function Graph() {
         plotWidth,
         plotHeight,
         horizontalLines,
-        yTicks: horizontalLines.map((y) => ({ y, value: "0.0" })),
+        yTicks: horizontalLines.map((y) => ({ y, value: formatChartValue(0, displayUnit) })),
         path: "",
         points: [],
         firstTime: "--:--:--",
@@ -288,6 +343,11 @@ export default function Graph() {
       maxValue += padding;
     }
 
+    minValue = Math.max(0, minValue);
+    if (maxValue <= minValue) {
+      maxValue = minValue + 5;
+    }
+
     const range = maxValue - minValue || 1;
     const stepX = samples.length > 1 ? plotWidth / (samples.length - 1) : 0;
 
@@ -306,7 +366,7 @@ export default function Graph() {
       const ratio = index / 4;
       return {
         y: plotTop + ratio * plotHeight,
-        value: (maxValue - ratio * range).toFixed(1),
+        value: formatChartValue(maxValue - ratio * range, displayUnit),
       };
     });
 
@@ -330,7 +390,7 @@ export default function Graph() {
         second: "2-digit",
       }),
     };
-  }, [locale, samples]);
+  }, [displayUnit, locale, samples]);
 
   const lastPointIndex = chartModel.points.length - 1;
   const selectedRepairForm = useMemo(
@@ -343,7 +403,9 @@ export default function Graph() {
       <div className="graph-layout">
         <div className="graph-card">
           <div className="graph-card-header">
-            <p className="graph-card-title">{t("graph.chartTitle")}</p>
+            <p className="graph-card-title">
+              {t("graph.chartTitle")} ({t(`dashboard.units.${displayUnit}`)})
+            </p>
             <div className="graph-form-menu">
               <label className="graph-form-label" htmlFor="graph-form-select">
                 {t("graph.formMenu.label")}
@@ -491,11 +553,15 @@ export default function Graph() {
         </div>
 
         <aside className="graph-live-panel">
-          <GaugeDisplay value={weight} />
+          <GaugeDisplay value={weight} unit={displayUnit} />
           <ControlPanel
             onTare={handleTare}
             onStart={handleStart}
             onStop={handleStop}
+            isRunning={isRunning}
+            onToggleUnit={handleToggleUnit}
+            unitToggleLabel={t(`dashboard.units.${displayUnit === "g" ? "n" : "g"}`)}
+            unitToggleAriaLabel={t("dashboard.actions.changeUnit")}
             onExport={handleExport}
           />
           {statusMessage ? <div className="status-message">{statusMessage}</div> : null}

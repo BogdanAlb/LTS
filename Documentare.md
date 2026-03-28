@@ -205,8 +205,10 @@ Textul UI este centralizat in `frontend/src/i18n/translations.js`.
   - polling la 500ms pe `/sensors/hx711`;
   - butoane Tare/Start/Stop.
 - **Graph**:
-  - polling la 500ms pe `/sensors/hx711`;
-  - retine ultimele 120 sample-uri;
+  - polling la 500ms pe `/sensors/hx711`, controlat local prin Start/Stop;
+  - retine ultimele 120 sample-uri si normalizeaza valorile negative la `0`;
+  - dupa Tare reseteaza valoarea curenta si reinitializeaza graficul de la `0`;
+  - permite schimbarea unitatii intre grame si Newtoni pentru indicator si etichetele de pe axa Y;
   - export PDF client-side din SVG.
 - **Status**:
   - polling la 5s pe `/sensors/wifi`;
@@ -328,6 +330,30 @@ Din commit-uri si structura actuala, evolutia a fost incrementala, pe pasi pract
 3. Configurare `VITE_API_BASE_URL` prin `.env.production`.
 4. Adaugare `requirements.txt` (sau `pyproject.toml`) pentru reproductibilitate.
 5. Eventual migrare Dashboard/Graph spre `/measurements/ws` pentru stream real, in loc de polling.
+
+## 10. Modificari facute in 28.03.2026
+
+### 10.1 Frontend - pagina Graph
+
+- s-a adaugat comutarea unitatii de afisare intre `g` si `N`, atat pentru indicatorul numeric, cat si pentru etichetele axei Y din grafic;
+- afisarea in Newtoni foloseste conversia `1 g = 0.000980665 N`;
+- butoanele Start/Stop au fost conectate in `Graph`, astfel incat pornirea si oprirea polling-ului sa fie controlate din aceeasi zona de comenzi;
+- la operatia Tare, valoarea curenta se reseteaza la `0`, iar bufferul graficului este reinitializat cu un singur punct de referinta;
+- sample-urile noi sunt fortate sa ramana nenegative in bufferul local al graficului.
+
+### 10.2 Componenta ControlPanel
+
+- `ControlPanel` a fost extins astfel incat sa poata afisa optional un buton Start/Stop pentru paginile care transmit handler-ele `onStart` si `onStop`;
+- eticheta si stilul butonului de masurare se schimba automat in functie de starea `isRunning`.
+
+### 10.3 Ajustari de layout
+
+- header-ul principal pentru ecranele non-login a fost ingustat usor si centrat, pentru o aliniere mai buna in layout-ul aplicatiei.
+
+### 10.4 Fisiere actualizate la rulare
+
+- `backend/storage/lts.db` si `.logs/kiosk.log` au fost modificate local in urma rularii/testarii aplicatiei;
+- aceste doua fisiere reflecta stare si loguri runtime, nu schimbari de logica in cod.
 
 ---
 
