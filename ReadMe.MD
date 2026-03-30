@@ -336,6 +336,73 @@ npm run dev
 
 ---
 
+## Optimizare timp de pornire
+
+Dupa instalare, ruleaza urmatorii pasi pentru a reduce semnificativ timpul de boot
+(de la ~27 secunde la ~8-10 secunde).
+
+### 1. Schimba dependenta de retea a serviciilor LTS
+
+Serviciile backend si frontend nu au nevoie de internet — ruleaza local.
+Schimbam `network-online.target` (asteapta conexiune completa la internet, ~14s)
+cu `network.target` (retea initializata, instantaneu):
+
+```bash
+sudo sed -i 's/network-online.target/network.target/g' \
+  /etc/systemd/system/lts-backend.service \
+  /etc/systemd/system/lts-frontend.service
+sudo systemctl daemon-reload
+```
+
+### 2. Dezactiveaza serviciile inutile
+
+Acestea sunt servicii active implicit pe Raspberry Pi OS care nu sunt necesare
+pentru un dispozitiv kiosk dedicat:
+
+```bash
+sudo systemctl disable --now \
+  NetworkManager-wait-online.service \
+  cloud-init.service \
+  cloud-init-local.service \
+  cloud-init-network.service \
+  cloud-config.service \
+  cloud-final.service \
+  ModemManager.service \
+  bluetooth.service \
+  avahi-daemon.service \
+  avahi-daemon.socket \
+  cups.service \
+  cups-browsed.service \
+  cups.socket \
+  cups.path \
+  nfs-blkmap.service \
+  rpcbind.service \
+  rpcbind.socket \
+  e2scrub_reap.service \
+  mosquitto.service
+```
+
+| Serviciu dezactivat | Timp economisit |
+|--------------------|----------------|
+| NetworkManager-wait-online | ~14 secunde |
+| cloud-init (toate) | ~4 secunde |
+| ModemManager, bluetooth, avahi | ~1.5 secunde |
+| cups, nfs, rpcbind, mosquitto | ~1 secunda |
+
+> **Atentie:** Daca folosesti imprimante (`cups`), Bluetooth, sau alte functii
+> din lista de mai sus, nu dezactiva serviciul respectiv.
+
+### 3. Verifica rezultatul dupa repornire
+
+```bash
+sudo reboot
+# Dupa pornire:
+systemd-analyze
+systemd-analyze blame | head -10
+```
+
+---
+
 ## Structura proiect
 
 ```
